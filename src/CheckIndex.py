@@ -69,7 +69,7 @@ def checkIndex(pathHD, SNVsToBeChecked, listSNVs, pathReportLog):
                     for i in range(len(TValues)):
                         if TValues[i] is None:
                             MSG = "Encontrado valor nulo para o tipo: "
-                            MSG += str(Tags[i]) + "no index.xml"
+                            MSG += str(Tags[i]) + " no index.xml"
                             updateLog(pathSNV, MSG, pathReportLog)
 
                     # Check if UF in names is equal to the one in index.xml

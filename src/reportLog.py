@@ -17,7 +17,8 @@ def CreateReportLog(pathMain):
         Log = open(pathReportLog, "r+")
         Log.truncate(0)
     # Add header in Log with dates time of verification (same as files name)
-    Log.writelines("Log: " + datetime.now().strftime("%d/%m/%Y - %H:%M:%S"))
+    MSG = "Log: " + datetime.now().strftime("%d/%m/%Y - %H:%M:%S\n\n")
+    Log.writelines(MSG)
     Log.close()
     return pathReportLog
 

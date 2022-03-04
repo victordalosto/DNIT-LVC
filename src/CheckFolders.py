@@ -63,12 +63,13 @@ def checkFolders(listSNVs, pathReportLog):
 
             # Check if folder contains an CSV RAW input
             hasCSV = False
-            for root, dir, files in os.walk(SNV):
+            pathGEO = os.path.join(SNV, "GEO")
+            for root, dir, files in os.walk(pathGEO):
                 for file in files:
                     if file.endswith(".csv"):
                         hasCSV = True
             if (hasCSV is False):
-                MSG = "Trecho não tem arquivo de dados brutos em formato .CSV"
+                MSG = "Trecho nao tem arquivo de dados brutos em formato .CSV"
                 updateLog(SNV, MSG, pathReportLog)
 
 

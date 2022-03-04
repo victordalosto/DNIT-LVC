@@ -1,0 +1,4 @@
+lib/ffmpeg/bin/ffprobe.exe
+lib/ffmpeg/bin/ffprobe.rar
+*.txt
+*__pycache__

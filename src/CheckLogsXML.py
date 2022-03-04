@@ -27,6 +27,8 @@ def checkLogsXML(listSNVs, pathRep):
 
             # List with the 24 Validations proposed in Edital for the XML
             valList = [None] * 24
+            finalList = [[], [], [], [], [], [], [], [], [], [], [], [],
+                         [], [], [], [], [], [], [], [], [], [], [], []]
             typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade",
                         "ExtLog", "DataHora", "TempoLog", "Frente", "Tras",
                         "Velocidade", "Odometro", "Z", "X", "Y", "Azi",
@@ -83,62 +85,64 @@ def checkLogsXML(listSNVs, pathRep):
                                     MSG += typeList[count]
                                     MSG += ". Valor no id: " + str(valList[0])
                                     updateLog(SNV, MSG, pathRep)
+                    for nn in range(len(valList)):
+                        finalList[nn].append(valList[nn])
                 except BaseException:
                     MSG = "Error no arquivo xml - " + traceback.format_exc()
                     updateLog(SNV, MSG, pathRep)
 
             # Pattern in message in case of a throwable error
-            Err = "Erro no arquivo LogsTrecho.XML - \
-                   Não foi possível verificar: "
+            Err = "Erro no arquivo LogsTrecho.XML - "
+            Err += "Nao foi possivel verificar: "
             KmsINDEX = [listSNVs[1][i], listSNVs[2][i]]
 
             try:
-                checkOdometer(valList, pathRep)
+                checkOdometer(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Odometro", pathRep)
 
             try:
-                checkKM(SNV, KmsINDEX, valList, pathRep)
+                checkKM(SNV, KmsINDEX, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "KMs", pathRep)
 
             try:
-                checkVideo(SNV, valList, pathRep)
+                checkVideo(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Videos", pathRep)
 
             try:
-                checkIRI(SNV, valList, pathRep)
+                checkIRI(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "IRIs", pathRep)
 
             try:
-                checkFlecha(SNV, valList, pathRep)
+                checkFlecha(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Flechas", pathRep)
 
             try:
-                checkAzimute(SNV, valList, pathRep)
+                checkAzimute(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Azimute", pathRep)
 
             try:
-                checkSatelites(SNV, valList, pathRep)
+                checkSatelites(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Satelites", pathRep)
 
             try:
-                checkCoordinates(SNV, valList, pathRep)
+                checkCoordinates(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "GPS", pathRep)
 
             try:
-                checkAltitude(SNV, valList, pathRep)
+                checkAltitude(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Altitude", pathRep)
 
             try:
-                checkErros(SNV, valList, pathRep)
+                checkErros(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Erros", pathRep)
 
@@ -148,13 +152,13 @@ def checkLogsXML(listSNVs, pathRep):
                 updateLog(SNV, Err + "Camera3", pathRep)
 
             try:
-                checkVelocity(SNV, valList, pathRep)
+                checkVelocity(SNV, finalList, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Velocidade", pathRep)
 
         except FileNotFoundError:
-            MSG = "Nao foi possivel validar o Trecho. \
-                   pois nao tem o arquivo LogsTrecho.xml no caminho: " + \
+            MSG = "Nao foi possivel validar o Trecho. " + \
+                   "pois nao tem o arquivo LogsTrecho.xml no caminho: " + \
                    os.path.join(listSNVs[3][i])
             updateLog(SNV, MSG, pathRep)
 
@@ -163,7 +167,7 @@ def checkLogsXML(listSNVs, pathRep):
             updateLog(SNV, MSG, pathRep)
 
         except BaseException:
-            MSG = "Erro durante a verificação dos LogsTrecho.xml"
+            MSG = "Erro durante a verificacao dos LogsTrecho.xml"
             MSG += os.path.join(listSNVs[3][i])
             updateLog(SNV, MSG, pathRep)
 

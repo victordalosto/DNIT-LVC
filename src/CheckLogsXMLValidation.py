@@ -14,7 +14,7 @@ def updateReportLoop(SNV, array, MSG, pathReportLog):
         ERRORMSG += " no LogsTrecho.XML."
         ERRORMSG += " Valores dos Ids com error: "
         for ii in range(len(array)):
-            ERRORMSG += str(array[ii]) + ", "
+            ERRORMSG += str(int(array[ii])) + ", "
         updateLog(SNV, ERRORMSG, pathReportLog)
 
 
@@ -29,20 +29,21 @@ def checkDups(SNV, array, tolerance, errorType, pathReportLog):
         value = array[num]
         if value not in usedValues:
             dups = 0
+            duplicatedValue = 0
             usedValues.append(value)  # Avoid reptition
             amount = array.count(value)  # number of dups
             amountPercentage = round(amount / len(array)*100, 2)
             # Update Log if the Sum of the duplicated values is
             # Higher than pratical defined values
             if amountPercentage > 9 and amount > 4*tolerance:
-                MSG = "Foram encontradas: " + str(amount) + "ocorrencias de "
+                MSG = "Foram encontradas: " + str(amount) + " ocorrencias de "
                 MSG += "valores duplicados = " + str(value) + " "
                 MSG += "do tipo: " + errorType + ". "
                 MSG += "Corresponde a " + str(amountPercentage) + " %"
                 updateLog(SNV, MSG, pathReportLog)
 
             # Check if values are really duplicated in sequence
-            if amount > 1.5*tolerance and amountPercentage > 2:
+            if amount > 4*tolerance and amountPercentage > 3:
                 # Get index of all duplicated values in the entire array
                 indexs = [m for m, x in enumerate(array) if x == value]
                 lastEval = 0
@@ -57,11 +58,13 @@ def checkDups(SNV, array, tolerance, errorType, pathReportLog):
                             count += 1
                             if count > dups:
                                 dups = count
+                                duplicatedValue = value
                         else:
                             break
-            if dups > tolerance:
+            if dups > 4*tolerance:
                 MSG = "Ocorrencias com valores duplicados em sequencia. "
                 MSG += "Foram encontrados: " + str(dups) + " "
+                MSG += "valores = " + str(duplicatedValue) + " "
                 MSG += "na secao " + errorType + " no LogsTrecho.xml. "
                 MSG += "Corresponde a (" + str(amountPercentage) + "%) "
                 MSG += "do trecho."
@@ -71,28 +74,28 @@ def checkDups(SNV, array, tolerance, errorType, pathReportLog):
 # Function that check if values are inside determined specified limit
 def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
     # Gets the amount of elements that are outside limits
-    indexesUp = [element for element in array if element >= limitUp]
-    indexesBot = [element for element in array if element <= limitBot]
+    indexesUp = [i for i, element in enumerate(array) if element >= limitUp]
+    indexesBot = [i for i, element in enumerate(array) if element <= limitBot]
     amountUp = len(indexesUp)
     amountBot = len(indexesBot)
     if amountUp > 0:
         newArray = []
         # Convert the indexes to the IDS in the LogsTrecho.XML file
         for value in indexesUp:
-            newArray.append(IDS[value])
+            newArray.append(int(IDS[value]))
         percentUp = str(round(amountUp / len(array)*100, 2))
         MSG = "valores incomuns de " + errorType + ". "
-        MSG += str(amountUp) + "ocorrencias (" + percentUp + "%) "
+        MSG += str(amountUp) + " ocorrencias (" + percentUp + "%) "
         MSG += ">= " + str(limitUp)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
     if amountBot > 0:
         newArray = []
         # Convert the indexes to the IDS in the LogsTrecho.XML file
-        for value in indexesUp:
-            newArray.append(IDS[value])
+        for value in indexesBot:
+            newArray.append(int(IDS[value]))
         percentBot = str(round(amountBot / len(array)*100, 2))
         MSG = "valores incomuns de " + errorType + ". "
-        MSG += str(amountBot) + "ocorrencias (" + percentBot + "%) "
+        MSG += str(amountBot) + " ocorrencias (" + percentBot + "%) "
         MSG += "<= " + str(limitBot)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
 
@@ -107,7 +110,7 @@ def checkOdometer(SNV, valList, pathReportLog):
     ERROS = [[], [], [], []]
     MSGS = ["odometros repetidos",
             "odometros com espacamento > 20m",
-            "odometros negativos"
+            "odometros negativos",
             "espacamento do odometro =/= espacamento do odometroTrecho"]
     # Loop inside odometer values
     for j in range(len(odometro)-1):
@@ -132,12 +135,12 @@ def checkOdometer(SNV, valList, pathReportLog):
                 step1d = abs(odometro[j+2] - odometro[j+1])
                 step2a = abs(odmTrecho[j] - odmTrecho[j-1])
                 step2d = abs(odmTrecho[j+2] - odmTrecho[j+1])
-                if abs((step1a + step1) - (step2a + step2)) > tolerance or \
+                if abs((step1a + step1) - (step2a + step2)) > tolerance and \
                    ((step1d + step1) - (step2d + step2)) > tolerance:
                     ERROS[3].append(IDS[j])
         # Send All Errors to function updateReportLoops
-        for j in range(len(ERROS)):
-            updateReportLoop(SNV, ERROS[j], MSGS[j], pathReportLog)
+    for j in range(len(ERROS)):
+        updateReportLoop(SNV, ERROS[j], MSGS[j], pathReportLog)
 
 
 # Check consistance about Km informations
@@ -173,9 +176,10 @@ def checkVideo(SNV, valList, pathReportLog):
             pathVid = os.path.join(pathInput, file)
             # Get the duration of the .mp4 file
             if (pathVid.endswith('.mp4') is True):
-                duration = eval((json.loads(subprocess.check_output(f'\
-                ffprobe -v quiet -show_streams -select_streams v:0 -of json "\
-                {pathVid}"', shell=True).decode())['streams'][0])['duration'])
+                duration = eval((json.loads(subprocess.check_output(f'ffprobe \
+                    -v quiet -show_streams -select_streams v:0 -of json \
+                    "{pathVid}"', shell=True).decode())
+                                ['streams'][0])['duration'])
             else:
                 duration = 0  # Problem already trated in checkFolders.py
             # Check if duration of video is different than the informed in XML
@@ -188,8 +192,8 @@ def checkVideo(SNV, valList, pathReportLog):
                 updateLog(SNV, MSG, pathReportLog)
     tol = 10
     errorType = "Valores iguais de tempo Camera "
-    checkDups(frontT, tol, errorType + "'Frente'", pathReportLog)
-    checkDups(backT, tol, errorType + "'Traseira'", pathReportLog)
+    checkDups(SNV, frontT, tol, errorType + "'Frente'", pathReportLog)
+    checkDups(SNV, backT, tol, errorType + "'Traseira'", pathReportLog)
     checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
     checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
     if frontT[0] > 60 or backT[0] > 60:
@@ -273,7 +277,7 @@ def checkPhotos(SNV, extension, pathReportLog):
     # Print messages that are outside the Road SNV limit
     if MSG != "":
         newMSG = "Problema com formato de arquivos ou fora dos limites index"
-        newMSG = " na pasta camera3: " + MSG
+        newMSG += " na pasta camera3: " + MSG
         updateLog(SNV, newMSG, pathReportLog)
     extensionPhoto = images*5/1000
     # Print error if folder has number of photos different than the Road SNV
@@ -295,7 +299,7 @@ def checkVelocity(SNV, valList, pathReportLog):
     checkDups(SNV, vel1, tolerance, "Velocidade", pathReportLog)
     # Number of times that velocity appears >= 60km *(1 + 10%)
     supLim = 66
-    infLim = 0
+    infLim = -0.1
     checkLimits(SNV, IDS, vel1, supLim, infLim, "Velocidade", pathReportLog)
     checkLimits(SNV, IDS, vel2, supLim, infLim, "Velocidade", pathReportLog)
     '''
@@ -341,7 +345,7 @@ def checkAzimute(SNV, valList, pathReportLog):
     IDS = valList[0]
     Azis = valList[14]
     supLim = 360
-    infLim = 0
+    infLim = -0.1
     MSG = "Azimute"
     checkLimits(SNV, IDS, Azis, supLim, infLim, MSG, pathReportLog)
 
@@ -352,5 +356,5 @@ def checkErros(SNV, valList, pathReportLog):
     errosList = valList[15]
     supLim = 100
     infLim = -0.1
-    MSG = "Tag Error"
+    MSG = "Tag <Error>"
     checkLimits(SNV, IDS, errosList, supLim, infLim, MSG, pathReportLog)

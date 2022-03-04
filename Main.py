@@ -14,8 +14,8 @@ Parameters used in the check.
 @param SNVsToBeChecked (array) - Informs which sections will be checked.
 Entered with ["full"] when you want to check the entire section.
 '''
-pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote2/2212"
-SNVsToBeChecked = [1123, 1124, 1125]
+pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote2/2208"
+SNVsToBeChecked = [634]
 
 # Calls the function that will check the files
 LVC.check(pathHD, SNVsToBeChecked)
