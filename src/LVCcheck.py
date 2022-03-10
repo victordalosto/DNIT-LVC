@@ -26,12 +26,14 @@ def check(pathHD, SNVsToBeChecked):
     # List of roads SNVs [id_nameSNV][kmInitial][kmFinal][adressPath]
     listSNVs = [[], [], [], []]
 
+    # Main functions that handles all the Data Checking
     def Main():
 
         # Path to the script
         pathMain = os.getcwd()
 
-        # Change the path of the directory to call the ffmpeg script.
+        # Change the path of the directory to be able to
+        # call the ffmpeg script ffprobe.exe.
         os.chdir(os.path.join(pathMain, "lib", "ffmpeg", 'bin'))
 
         # Create an repot log file with all checking done on files

@@ -24,21 +24,21 @@ def CreateReportLog(pathMain):
 
 
 # Function that updates the Log with a new status
-def updateLog(nameTrecho, MSG, pathReportLog):
+def updateLog(header, MSG, pathReportLog):
     # Add identation to the MSG text
     if (MSG != ""):
         MSG = "  * " + MSG
-    # Fix the notation. File come as: //10.100.10.219\2102\videos
-    nameTrecho = nameTrecho.replace("/", "\\")
+    # Fix the notation if file come as: //10.100.10.219\2102\videos
+    header = header.replace("/", "\\")
     # Get all the text already in the Log file
     listLines = (open(pathReportLog, "r")).readlines()
     try:
         # Create a line for the road Name if it doesn't exist
-        line = listLines.index(nameTrecho+"\n")
+        line = listLines.index(header+"\n")
         listLines.insert(line+1, MSG+"\n")
     except ValueError:
         # Road Line SNV already exists. Append new update in it
-        listLines.append(nameTrecho+"\n")
+        listLines.append(header+"\n")
         listLines.append(MSG+"\n\n")
     # Append new Text to the Log.txt
     Log = open(pathReportLog, "w")

@@ -30,7 +30,7 @@ def checkFolders(listSNVs, pathReportLog):
         if os.path.exists(SNV) is False:
             MSG = "Nao foi possivel encontrar para o trecho "
             MSG += str(listSNVs[0][i]) + ", "
-            MSG += "seu caminho na pasta. "
+            MSG += "o seu caminho na pasta. "
             updateLog(SNV, MSG, pathReportLog)
 
         else:

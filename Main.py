@@ -6,7 +6,7 @@
 # Check if files are apt. to be approved and codificated
 # ============================================================== #
 
-import src.LVCcheckNEW as LVC
+import src.LVCcheck as LVC
 
 '''
 Parameters used in the check.
@@ -14,8 +14,10 @@ Parameters used in the check.
 @param SNVsToBeChecked (array) - Informs which sections will be checked.
 Entered with ["full"] when you want to check the entire section.
 '''
-pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote2/2208"
-SNVsToBeChecked = [634]
+
+pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote2/2214"
+
+SNVsToBeChecked = [1517]
 
 # Calls the function that will check the files
 LVC.check(pathHD, SNVsToBeChecked)

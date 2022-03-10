@@ -157,7 +157,7 @@ def checkLogsXML(listSNVs, pathRep):
                 updateLog(SNV, Err + "Velocidade", pathRep)
 
         except FileNotFoundError:
-            MSG = "Nao foi possivel validar o Trecho. " + \
+            MSG = "Nao foi possivel validar o Trecho, " + \
                    "pois nao tem o arquivo LogsTrecho.xml no caminho: " + \
                    os.path.join(listSNVs[3][i])
             updateLog(SNV, MSG, pathRep)
