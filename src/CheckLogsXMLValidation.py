@@ -3,71 +3,38 @@ import os
 import glob
 import json
 import subprocess
+
 from src.reportLog import updateLog
+
+skipCheckingDups = True
 
 
 # Update the Report Log with the informations about erros
 def updateReportLoop(SNV, array, MSG, pathReportLog):
     if len(array) > 0:
-        ERRORMSG = "Trecho com inconsistencia de "
-        ERRORMSG += MSG
-        ERRORMSG += " no LogsTrecho.XML."
-        ERRORMSG += " Valores dos Ids com error: "
-        for ii in range(len(array)):
-            ERRORMSG += str(int(array[ii])) + ", "
+        ERRORMSG = "Inconsistencia de " + MSG + " no LogsTrecho.XML. Valores dos Ids com error: "
+        for iterIDs in range(len(array)-1):
+            ERRORMSG += str(int(array[iterIDs])) + ", "
+        ERRORMSG += str(int(array[len(array)-1])) + "."
         updateLog(SNV, ERRORMSG, pathReportLog)
 
 
-# Count the number of duplicates values in  a array
+# Count the number of duplicates values in a array
 def checkDups(SNV, array, tolerance, errorType, pathReportLog):
+    if (skipCheckingDups):
+        return
     usedValues = []
-    for i in range(len(array)):
-        array[i] = round(array[i], 6)
     # Loop in array to check if values in array are duplicated
     for num in range(len(array)-1):
         # Avoid checking the same value in the array
         value = array[num]
         if value not in usedValues:
-            dups = 0
-            duplicatedValue = 0
             usedValues.append(value)  # Avoid reptition
             amount = array.count(value)  # number of dups
             amountPercentage = round(amount / len(array)*100, 2)
-            # Update Log if the Sum of the duplicated values is
-            # Higher than pratical defined values
+            # Update Log if the Sum of the duplicated values is High
             if amountPercentage > 9 and amount > 4*tolerance:
-                MSG = "Foram encontradas: " + str(amount) + " ocorrencias de "
-                MSG += "valores duplicados = " + str(value) + " "
-                MSG += "do tipo: " + errorType + ". "
-                MSG += "Corresponde a " + str(amountPercentage) + " %"
-                updateLog(SNV, MSG, pathReportLog)
-
-            # Check if values are really duplicated in sequence
-            if amount > 4*tolerance and amountPercentage > 3:
-                # Get index of all duplicated values in the entire array
-                indexs = [m for m, x in enumerate(array) if x == value]
-                lastEval = 0
-                for jj in range(len(indexs)-1):
-                    if jj < lastEval:
-                        continue
-                    count = 1
-                    for kk in range(jj, len(indexs)-1):
-                        # Check if Duplicated values are in sequence
-                        if indexs[kk+1] - indexs[kk] == 1:
-                            lastEval = kk
-                            count += 1
-                            if count > dups:
-                                dups = count
-                                duplicatedValue = value
-                        else:
-                            break
-            if dups > 4*tolerance:
-                MSG = "Ocorrencias com valores duplicados em sequencia. "
-                MSG += "Foram encontrados: " + str(dups) + " "
-                MSG += "valores = " + str(duplicatedValue) + " "
-                MSG += "na secao " + errorType + " no LogsTrecho.xml. "
-                MSG += "Corresponde a (" + str(amountPercentage) + "%) "
-                MSG += "do trecho."
+                MSG = "Foram encontradas: " + str(amount) + " ocorrencias de valores duplicados = " + str(value) + " do tipo: " + errorType + ". Corresponde a " + str(amountPercentage) + " %"
                 updateLog(SNV, MSG, pathReportLog)
 
 
@@ -84,9 +51,7 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
         for value in indexesUp:
             newArray.append(int(IDS[value]))
         percentUp = str(round(amountUp / len(array)*100, 2))
-        MSG = "valores incomuns de " + errorType + ". "
-        MSG += str(amountUp) + " ocorrencias (" + percentUp + "%) "
-        MSG += ">= " + str(limitUp)
+        MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
     if amountBot > 0:
         newArray = []
@@ -94,9 +59,7 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
         for value in indexesBot:
             newArray.append(int(IDS[value]))
         percentBot = str(round(amountBot / len(array)*100, 2))
-        MSG = "valores incomuns de " + errorType + ". "
-        MSG += str(amountBot) + " ocorrencias (" + percentBot + "%) "
-        MSG += "<= " + str(limitBot)
+        MSG = "valores incomuns de " + errorType + ". " + str(amountBot) + " ocorrencias (" + percentBot + "%) <= " + str(limitBot)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
 
 
@@ -106,8 +69,7 @@ def checkOdometer(SNV, valList, pathReportLog):
     IDS = valList[0]
     odometro = valList[1]
     odmTrecho = valList[2]
-    # Inconsistencys stored in an Array: ERROS[[], ..[]]
-    ERROS = [[], [], [], []]
+    ERROS = [[], [], [], []]  # Inconsistencys stored in an Array: ERROS[[], ..[]]
     MSGS = ["odometros repetidos",
             "odometros com espacamento > 20m",
             "odometros negativos",
@@ -143,7 +105,6 @@ def checkOdometer(SNV, valList, pathReportLog):
         updateReportLoop(SNV, ERROS[j], MSGS[j], pathReportLog)
 
 
-# Check consistance about Km informations
 # Check if kms in Index.xml are Equal to LogsTrecho.xml
 def checkKM(SNV, KMsIndex, valList, pathReportLog):
     initIndex = KMsIndex[0]
@@ -152,12 +113,10 @@ def checkKM(SNV, KMsIndex, valList, pathReportLog):
     initLog = listOdometer[0]/1000
     finalLog = listOdometer[-1]/1000
     if abs(initLog - initIndex) >= 0.01:
-        MSG = "KM Inicial no index.xml (" + str(round(initIndex, 3)) + ")" + \
-              " =/= LogsTrechos.xml (" + str(round(initLog, 3)) + ")"
+        MSG = "KM Inicial no index.xml (" + str(round(initIndex, 3)) + ") =/= LogsTrechos.xml (" + str(round(initLog, 3)) + ")"
         updateLog(SNV, MSG, pathReportLog)
     if abs(finalLog - finalIndex) >= 0.01:
-        MSG = "KM Final no index.xml (" + str(round(finalIndex, 3)) + ")" +  \
-              " =/= LogsTrechos.xml (" + str(round(finalLog, 3)) + ")"
+        MSG = "KM Final no index.xml (" + str(round(finalIndex, 3)) + ") =/= LogsTrechos.xml (" + str(round(finalLog, 3)) + ")"
         updateLog(SNV, MSG, pathReportLog)
 
 
@@ -176,24 +135,16 @@ def checkVideo(SNV, valList, pathReportLog):
             pathVid = os.path.join(pathInput, file)
             # Get the duration of the .mp4 file
             if (pathVid.endswith('.mp4') is True):
-                duration = eval((json.loads(subprocess.check_output(f'ffprobe \
-                    -v quiet -show_streams -select_streams v:0 -of json \
-                    "{pathVid}"', shell=True).decode())
-                                ['streams'][0])['duration'])
+                duration = eval((json.loads(subprocess.check_output(f'ffprobe -v quiet -show_streams -select_streams v:0 -of json {pathVid}', shell=True).decode())['streams'][0])['duration'])
             else:
                 duration = 0  # Problem already trated in checkFolders.py
             # Check if duration of video is different than the informed in XML
-            if abs(final - duration) > 30:
-                MSG = "A Duracao do arquivo de video: "
-                MSG += str(round(duration, 1)) + "segundos "
-                MSG += "especificado no Logstrecho.xml esta diferente dos "
-                MSG += str(round(final, 1)) + "segundos do arquivo na pasta: "
-                MSG += local
+            if abs(final - duration) > 10:
+                MSG = "A duracao do video: " + str(round(final, 1)) + "segundos apresentado no Logstrecho.xml esta diferente dos " + str(round(duration, 1)) + "segundos do video na pasta: " + local
                 updateLog(SNV, MSG, pathReportLog)
-    tol = 10
-    errorType = "Valores iguais de tempo Camera "
-    checkDups(SNV, frontT, tol, errorType + "'Frente'", pathReportLog)
-    checkDups(SNV, backT, tol, errorType + "'Traseira'", pathReportLog)
+    tolerance = 5
+    checkDups(SNV, frontT, tolerance, "Valores iguais de tempo Camera 'Frente'", pathReportLog)
+    checkDups(SNV, backT, tolerance, "Valores iguais de tempo Camera 'Traseira'", pathReportLog)
     checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
     checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
     if frontT[0] > 60 or backT[0] > 60:
@@ -207,12 +158,9 @@ def checkIRI(SNV, valList, pathReportLog):
     IDS = valList[0]
     IRIint = valList[18]
     IRIext = valList[19]
-    # "Ao final de cada 100 (cem) metros, os seguintes dados de
-    # Irregularidade Longitudinal devem ser incorporados aos registros:"
     tolerance = 100
-    errorType = "Repetidos valores de "
-    checkDups(SNV, IRIint, tolerance, errorType + "IRIint", pathReportLog)
-    checkDups(SNV, IRIext, tolerance, errorType + "IRIext", pathReportLog)
+    checkDups(SNV, IRIint, tolerance, "Repetidos valores de IRIint", pathReportLog)
+    checkDups(SNV, IRIext, tolerance, "Repetidos valores de IRIext", pathReportLog)
     supLim = 15
     infLim = 0
     checkLimits(SNV, IDS, IRIint, supLim, infLim, "IRIint", pathReportLog)
@@ -227,9 +175,8 @@ def checkFlecha(SNV, valList, pathReportLog):
     # "Ao final de cada 20 (vinte) metros devera ser incorporado ao
     # registo o valor do Afundamento da Trilha de Rodas (ATR)"
     tolerance = 20
-    errorType = "Repetidos valores de flecha"
-    checkDups(SNV, fInt, tolerance, errorType + "Int", pathReportLog)
-    checkDups(SNV, fExt, tolerance, errorType + "Ext", pathReportLog)
+    checkDups(SNV, fInt, tolerance, "Repetidos valores de flechaInt", pathReportLog)
+    checkDups(SNV, fExt, tolerance, "Repetidos valores de flechaExt", pathReportLog)
     supLim = 40
     infLim = 0
     checkLimits(SNV, IDS, fInt, supLim, infLim, "flechaInt", pathReportLog)
@@ -242,9 +189,8 @@ def checkCoordinates(SNV, valList, pathReportLog):
     X = valList[12]
     Y = valList[13]
     tolerance = 20
-    errorType = "Repetidos valores de GPS "
-    checkDups(SNV, X, tolerance, errorType + "'X'", pathReportLog)
-    checkDups(SNV, Y, tolerance, errorType + "'Y'", pathReportLog)
+    checkDups(SNV, X, tolerance, "Repetidos valores de GPS 'X'", pathReportLog)
+    checkDups(SNV, Y, tolerance, "Repetidos valores de GPS 'Y'", pathReportLog)
     errorType2 = " - Coordenadas GPS Fora do Brasil"
     checkLimits(SNV, IDS, X, -35, -74, "X" + errorType2, pathReportLog)
     checkLimits(SNV, IDS, Y, 5.3, -34, "Y" + errorType2, pathReportLog)
@@ -260,14 +206,11 @@ def checkPhotos(SNV, extension, pathReportLog):
     for file in os.listdir(pathImg):
         pathI = os.path.join(pathImg, file)
         if os.path.isfile(pathI):
-            if file.endswith(".png") or \
-               file.endswith(".jpeg") or \
-               file.endswith(".jpg"):
+            if file.endswith(".png") or file.endswith(".jpeg") or file.endswith(".jpg"):
                 images += 1
                 # Check if image is corrupted
                 if os.path.getsize(pathI) == 0:
-                    NMSG = file + " na pasta camera3 esta corrompida"
-                    updateLog(SNV, NMSG, pathReportLog)
+                    updateLog(SNV, file + " na pasta camera3 esta corrompida", pathReportLog)
                 file, type = os.path.splitext(file)
                 try:
                     if float(file) < 0 or float(file) > (extension*1000+150):
@@ -276,17 +219,12 @@ def checkPhotos(SNV, extension, pathReportLog):
                     MSG = MSG + file + type + "; "
     # Print messages that are outside the Road SNV limit
     if MSG != "":
-        newMSG = "Problema com formato de arquivos ou fora dos limites index"
-        newMSG += " na pasta camera3: " + MSG
+        newMSG = "Problema com formato de arquivos ou fora dos limites index na pasta camera3: " + MSG
         updateLog(SNV, newMSG, pathReportLog)
     extensionPhoto = images*5/1000
     # Print error if folder has number of photos different than the Road SNV
-    if (extensionPhoto < 0.91*extension or extensionPhoto > 1.15*extension):
-        MSG = "Problema relacionado ao numero de foto. Extensao no index ("
-        MSG += str(round(extension, 2)) + "km) =/= " + str(images) + " "
-        MSG += " x 5m (" + str(round(extensionPhoto, 2)) + "km). "
-        MSG += "Fotos deveriam estar espacadas de 5-5m, e nao "
-        MSG += str(round(extension*1000/images, 1)) + "m"
+    if (extensionPhoto < 0.95*extension or extensionPhoto > 1.15*extension):
+        MSG = "Problema relacionado ao numero de foto. Extensao no index (" + str(round(extension, 2)) + "km) =/= " + str(images) + "  x 5m (" + str(round(extensionPhoto, 2)) + "km). Fotos deveriam estar espacadas de 5-5m, e nao " + str(round(extension*1000/images, 1)) + "m"
         updateLog(SNV, MSG, pathReportLog)
 
 
@@ -302,18 +240,6 @@ def checkVelocity(SNV, valList, pathReportLog):
     infLim = -0.1
     checkLimits(SNV, IDS, vel1, supLim, infLim, "Velocidade", pathReportLog)
     checkLimits(SNV, IDS, vel2, supLim, infLim, "Velocidade", pathReportLog)
-    '''
-    diff = 0
-    for j in range(len(vel1)):
-        diference = abs(vel1[j] - vel2[j])
-        if (diference > 0.2):
-            diff += 1
-    if diff > 0:
-        amount = round(diff / len(vel1)*100, 2)
-        MSG = str(diff) + " divergences (" + str(amount) + "%) " + \
-            "from Velocity to GPS to GPS Velocity in LogsTrecho.xml"
-        updateLog(SNV, MSG)
-    '''
 
 
 # Check if coordinates Altitude are correct
@@ -344,7 +270,7 @@ def checkSatelites(SNV, valList, pathReportLog):
 def checkAzimute(SNV, valList, pathReportLog):
     IDS = valList[0]
     Azis = valList[14]
-    supLim = 360
+    supLim = 360.01
     infLim = -0.1
     MSG = "Azimute"
     checkLimits(SNV, IDS, Azis, supLim, infLim, MSG, pathReportLog)

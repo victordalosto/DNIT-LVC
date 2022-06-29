@@ -5,7 +5,7 @@ from src.reportLog import updateLog
 
 
 # ############################################### #
-#  The structure of files in folder is defined as
+#  The structure of files in HD folder is defined as
 #   XXXX (HDs NAME)
 #       - XX_XX_XXXX (DATE OF SURVEY)
 #           - XXX_YYYYYYYYYY (NUM_ROADSNV)
@@ -28,9 +28,7 @@ def checkFolders(listSNVs, pathReportLog):
 
         # Check if address path exists on HD
         if os.path.exists(SNV) is False:
-            MSG = "Nao foi possivel encontrar para o trecho "
-            MSG += str(listSNVs[0][i]) + ", "
-            MSG += "o seu caminho na pasta. "
+            MSG = "Nao foi possivel encontrar para o trecho " + str(listSNVs[0][i]) + ", o seu caminho na pasta. "
             updateLog(SNV, MSG, pathReportLog)
 
         else:
@@ -66,8 +64,9 @@ def checkFolders(listSNVs, pathReportLog):
             pathGEO = os.path.join(SNV, "GEO")
             for root, dir, files in os.walk(pathGEO):
                 for file in files:
-                    if file.endswith(".csv"):
+                    if str(file).lower().endswith(".csv"):
                         hasCSV = True
+                        break
             if (hasCSV is False):
                 MSG = "Trecho nao tem arquivo de dados brutos em formato .CSV"
                 updateLog(SNV, MSG, pathReportLog)
@@ -90,6 +89,7 @@ def checkVideosIntegrity(path, type, SNV, pathReportLog):
                 if os.path.getsize(pathCam) == 0:
                     MSG = "Arquivo corrompido na pasta: " + type
                     updateLog(SNV, MSG, pathReportLog)
+                break
         except BaseException:
             MSG = "Problema ao verificar a pasta: " + type
             updateLog(SNV, MSG, pathReportLog)

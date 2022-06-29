@@ -8,6 +8,7 @@
 # ============================================================== #
 
 import os
+from src.ObtainTrechos import ObtainTrechos
 from src.reportLog import CreateReportLog
 from src.CheckIndex import checkIndex
 from src.CheckFolders import checkFolders
@@ -15,41 +16,27 @@ from src.CheckLogsXML import checkLogsXML
 
 
 def check(pathHD, SNVsToBeChecked):
-    '''
-    Main script that checks the files for LVC import.
+    # Path to the script
+    pathMain = os.getcwd()
 
-    @param pathHD (String) Main directory where the files are located.
-    @param SNVsToBeChecked (Array) List of SNVs names or IDs to check.
-    Set SNVsToBeCheckec = ["full"] to check the entire Root.
-    '''
+    # Change the path of the directory to ffmpeg script ffprobe.exe
+    os.chdir(os.path.join(pathMain, "lib", "ffmpeg", 'bin'))
 
-    # List of roads SNVs [id_nameSNV][kmInitial][kmFinal][adressPath]
-    listSNVs = [[], [], [], []]
+    # Create an repot log file with all checking done on files
+    pathReportLog = CreateReportLog(pathMain)
 
-    # Main functions that handles all the Data Checking
-    def Main():
+    # Obtains the List of roads SNVs to be checked
+    listToCheck = ObtainTrechos(pathHD, pathReportLog, SNVsToBeChecked)
 
-        # Path to the script
-        pathMain = os.getcwd()
+    # Check for inconsistencies in Index.xml
+    listSNVs = checkIndex(pathHD, listToCheck, pathReportLog)
 
-        # Change the path of the directory to be able to
-        # call the ffmpeg script ffprobe.exe.
-        os.chdir(os.path.join(pathMain, "lib", "ffmpeg", 'bin'))
+    # Check the integrity and structure of files and folders
+    checkFolders(listSNVs, pathReportLog)
 
-        # Create an repot log file with all checking done on files
-        pathReportLog = CreateReportLog(pathMain)
+    # Check all DATA inside the LogsTrecho.XML files
+    checkLogsXML(listSNVs, pathReportLog)
 
-        # Check for inconsistencies in Index.xml
-        checkIndex(pathHD, SNVsToBeChecked, listSNVs, pathReportLog)
-
-        # Check the integrity and structure of files and folders
-        checkFolders(listSNVs, pathReportLog)
-
-        # Check all DATA inside the LogsTrecho.XML files
-        checkLogsXML(listSNVs, pathReportLog)
-
-        # Print in the Promp tha all validations were done
-        print("Verificaçao concluida com sucesso LVC Check - 100%")
-        os.chdir(pathMain)
-
-    Main()
+    # Print in the Promp tha all validations were done
+    os.chdir(pathMain)
+    print("Verificaçao concluida com sucesso LVC Check - 100%")

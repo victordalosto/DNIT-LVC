@@ -2,12 +2,14 @@
 import os
 from datetime import datetime
 
+from src.Utils import isValid
+
 
 # Create a report log.txt file with all checking done on files
 def CreateReportLog(pathMain):
     # Create a log file named as the current date in the Folder ../Main/lib/
     # File named as LOG_dd_mm_yyyy_hh_mm_ss
-    TEXT = "LOG_" + datetime.now().strftime("%d_%m_%Y_%Hh_%Mm_%Ss") + ".txt"
+    TEXT = "LOG_" + datetime.now().strftime("%Y_%m_%d_%Hh_%Mm_%Ss") + ".txt"
     pathReportLog = os.path.join(pathMain, "Logs", TEXT)
     if os.path.isfile(pathReportLog) is False:
         # Create a LOG.txt
@@ -26,7 +28,7 @@ def CreateReportLog(pathMain):
 # Function that updates the Log with a new status
 def updateLog(header, MSG, pathReportLog):
     # Add identation to the MSG text
-    if (MSG != ""):
+    if (isValid(MSG)):
         MSG = "  * " + MSG
     # Fix the notation if file come as: //10.100.10.219\2102\videos
     header = header.replace("/", "\\")

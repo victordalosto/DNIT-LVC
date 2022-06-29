@@ -2,89 +2,73 @@
 import os
 import traceback
 import xml.etree.ElementTree as ET
+
+from src.Utils import isNotValid, printPercentage
 from src.reportLog import updateLog
-from src.CheckLogsXMLValidation import checkOdometer, checkKM, checkVideo,\
-    checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, \
-    checkAltitude, checkErros, checkPhotos, checkVelocity
+from src.CheckLogsXMLValidation import checkOdometer, checkKM, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
+
+typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHora", "TempoLog", "Frente", "Tras", "Velocidade", "Odometro", "Z", "X", "Y", "Azi", "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt", "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
 
 
 # Check informations inside LogsTrecho.xml and its integrity
 def checkLogsXML(listSNVs, pathRep):
 
     # Loop to get all Roads SNV
-    for i in range(len(listSNVs[0])):
+    for iter in range(len(listSNVs[0])):
 
         # Get SNVs path to be validated
-        SNV = listSNVs[3][i]
+        NAME = listSNVs[0][iter]
+        KM_INITIAL = listSNVs[1][iter]
+        KM_FINAL = listSNVs[2][iter]
+        SNV = listSNVs[3][iter]
 
         # Print the % concluded of the DATA validation
-        printPercentage(listSNVs[0][i], round(i/len(listSNVs[0])*100, 2))
+        printPercentage(NAME, round(iter/len(listSNVs[0])*100, 2))
 
         try:
             # Gets the informations inside LogsTrecho.XML
-            LogsTrechoXML = os.path.join(SNV, "LogsTrecho.xml")
-            root = ET.parse(LogsTrechoXML).getroot()
+            xmlTAG = ET.parse(os.path.join(SNV, "LogsTrecho.xml")).getroot()
 
             # List with the 24 Validations proposed in Edital for the XML
             valList = [None] * 24
-            finalList = [[], [], [], [], [], [], [], [], [], [], [], [],
-                         [], [], [], [], [], [], [], [], [], [], [], []]
-            typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade",
-                        "ExtLog", "DataHora", "TempoLog", "Frente", "Tras",
-                        "Velocidade", "Odometro", "Z", "X", "Y", "Azi",
-                        "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt",
-                        "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
-
+            finalList = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
             # Loop that interate inside LogsTrecho.xml File
-            for index in range(len(root[0])):
+            for i in range(len(xmlTAG[0])):
                 try:
                     # The code below was purposely taken out of a loop
-                    valList[0] = root[0][index].attrib.get('Id')
-                    valList[1] = root[0][index].attrib.get('Odometro')
-                    valList[2] = root[0][index].attrib.get('OdometroTrecho')
-                    valList[3] = root[0][index].attrib.get('Velocidade')
-                    valList[4] = root[0][index].attrib.get('ExtLog')
-                    valList[5] = root[0][index].attrib.get('DataHora')
-                    valList[6] = root[0][index].attrib.get('TempoLog')
-                    valList[7] = (root[0][index][0].attrib).get('Frente')
-                    valList[8] = (root[0][index][0].attrib).get('Tras')
-                    valList[9] = (root[0][index][1].attrib).get('Velocidade')
-                    valList[10] = (root[0][index][1].attrib).get('Odometro')
-                    valList[11] = (root[0][index][1].attrib).get('Z')
-                    valList[12] = (root[0][index][1].attrib).get('X')
-                    valList[13] = (root[0][index][1].attrib).get('Y')
-                    valList[14] = (root[0][index][1].attrib).get('Azi')
-                    valList[15] = (root[0][index][1].attrib).get('Erro')
-                    valList[16] = (root[0][index][1].attrib).get('Sat')
-                    valList[17] = (root[0][index][1].attrib).get('GPRMC')
-                    valList[18] = (root[0][index][2].attrib).get('IRIInt')
-                    valList[19] = (root[0][index][2].attrib).get('IRIExt')
-                    valList[20] = (root[0][index][2].attrib).get('FlechaInt')
-                    valList[21] = (root[0][index][2].attrib).get('FlechaExt')
-                    valList[22] = (root[0][index][2].attrib).get('TipoReves')
-                    valList[23] = (root[0][index][2].attrib).get('PerUrb')
+                    valList[0] = xmlTAG[0][i].attrib.get(typeList[0])
+                    valList[1] = xmlTAG[0][i].attrib.get(typeList[1])
+                    valList[2] = xmlTAG[0][i].attrib.get(typeList[2])
+                    valList[3] = xmlTAG[0][i].attrib.get(typeList[3])
+                    valList[4] = xmlTAG[0][i].attrib.get(typeList[4])
+                    valList[5] = xmlTAG[0][i].attrib.get(typeList[5])
+                    valList[6] = xmlTAG[0][i].attrib.get(typeList[6])
+                    valList[7] = xmlTAG[0][i][0].attrib.get(typeList[7])
+                    valList[8] = xmlTAG[0][i][0].attrib.get(typeList[8])
+                    valList[9] = xmlTAG[0][i][1].attrib.get(typeList[9])
+                    valList[10] = xmlTAG[0][i][1].attrib.get(typeList[10])
+                    valList[11] = xmlTAG[0][i][1].attrib.get(typeList[11])
+                    valList[12] = xmlTAG[0][i][1].attrib.get(typeList[12])
+                    valList[13] = xmlTAG[0][i][1].attrib.get(typeList[13])
+                    valList[14] = xmlTAG[0][i][1].attrib.get(typeList[14])
+                    valList[15] = xmlTAG[0][i][1].attrib.get(typeList[15])
+                    valList[16] = xmlTAG[0][i][1].attrib.get(typeList[16])
+                    valList[17] = xmlTAG[0][i][1].attrib.get(typeList[17])
+                    valList[18] = xmlTAG[0][i][2].attrib.get(typeList[18])
+                    valList[19] = xmlTAG[0][i][2].attrib.get(typeList[19])
+                    valList[20] = xmlTAG[0][i][2].attrib.get(typeList[20])
+                    valList[21] = xmlTAG[0][i][2].attrib.get(typeList[21])
+                    valList[22] = xmlTAG[0][i][2].attrib.get(typeList[22])
+                    valList[23] = xmlTAG[0][i][2].attrib.get(typeList[23])
 
-                    # Validations done in XML File
-                    for count in range(len(valList)):
-                        # Check if value is obtainable
-                        if valList[count] == "" or valList is None:
-                            val = typeList[count]
-                            MSG = "Valor Null encontrado para " + val
-                            MSG += ". Valor no id: " + str(int(valList[0]))
-                            updateLog(SNV, MSG, pathRep)
-                        # Check if value is convertable to Number
-                        if valList[count] is not None and \
-                           valList[count] != "" and \
-                           valList[count] != " ":
-                            if count not in [5, 17, 22, 23]:
-                                try:
-                                    value = float(valList[count])
-                                    valList[count] = round(value, 10)
-                                except BaseException:
-                                    MSG = "Not a Number encontrado para "
-                                    MSG += typeList[count]
-                                    MSG += ". Valor no id: " + str(valList[0])
-                                    updateLog(SNV, MSG, pathRep)
+                    for attribute in range(len(valList)):
+                        if isNotValid(valList[attribute]):  # Check if null
+                            updateLog(SNV, "Valor Null encontrado para " + typeList[attribute] + ". Valor no id: " + str(int(valList[0])), pathRep)
+                        if attribute not in [5, 17, 22, 23]:  # Shoulb be a number
+                            try:
+                                valList[attribute] = round(float(valList[attribute]), 10)
+                            except BaseException:
+                                updateLog(SNV, "Not a Number encontrado para " + typeList[attribute] + ". Valor no id: " + str(valList[0]), pathRep)
                     for nn in range(len(valList)):
                         finalList[nn].append(valList[nn])
                 except BaseException:
@@ -92,9 +76,8 @@ def checkLogsXML(listSNVs, pathRep):
                     updateLog(SNV, MSG, pathRep)
 
             # Pattern in message in case of a throwable error
-            Err = "Erro no arquivo LogsTrecho.XML - "
-            Err += "Nao foi possivel verificar: "
-            KmsINDEX = [listSNVs[1][i], listSNVs[2][i]]
+            Err = "Erro no arquivo LogsTrecho.XML - Nao foi possivel verificar: "
+            KmsINDEX = [KM_INITIAL, KM_FINAL]
 
             try:
                 checkOdometer(SNV, finalList, pathRep)
@@ -147,7 +130,7 @@ def checkLogsXML(listSNVs, pathRep):
                 updateLog(SNV, Err + "Erros", pathRep)
 
             try:
-                checkPhotos(SNV, listSNVs[1][i]-listSNVs[2][i], pathRep)
+                checkPhotos(SNV, KM_INITIAL-KM_FINAL, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Camera3", pathRep)
 
@@ -157,9 +140,7 @@ def checkLogsXML(listSNVs, pathRep):
                 updateLog(SNV, Err + "Velocidade", pathRep)
 
         except FileNotFoundError:
-            MSG = "Nao foi possivel validar o Trecho, " + \
-                   "pois nao tem o arquivo LogsTrecho.xml no caminho: " + \
-                   os.path.join(listSNVs[3][i])
+            MSG = "Nao foi possivel validar o Trecho, pois nao tem o arquivo LogsTrecho.xml no caminho: " + os.path.join(listSNVs[3][iter])
             updateLog(SNV, MSG, pathRep)
 
         except ET.ParseError:
@@ -167,17 +148,8 @@ def checkLogsXML(listSNVs, pathRep):
             updateLog(SNV, MSG, pathRep)
 
         except BaseException:
-            MSG = "Erro durante a verificacao dos LogsTrecho.xml"
-            MSG += os.path.join(listSNVs[3][i])
+            MSG = "Erro durante a verificacao dos LogsTrecho.xml" + os.path.join(listSNVs[3][iter])
             updateLog(SNV, MSG, pathRep)
 
         # Update Log, informing that checkings were done on ROAD SNV
         updateLog(SNV, "Verificacao Concluida", pathRep)
-
-
-# Print the percentage of validation done in Prompt
-def printPercentage(SNVsName, percentage):
-    SNVsName = str(SNVsName)
-    percentage = str(percentage)
-    MSG = "Trecho " + SNVsName + " - " + percentage + "%"
-    print(MSG)
