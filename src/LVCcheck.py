@@ -32,7 +32,7 @@ def check(pathHD, SNVsToBeChecked):
     listSNVs = checkIndex(pathHD, listToCheck, pathReportLog)
 
     # Check the integrity and structure of files and folders
-    checkFolders(listSNVs, pathReportLog)
+    checkFolders(pathMain, listSNVs, pathReportLog)
 
     # Check all DATA inside the LogsTrecho.XML files
     checkLogsXML(listSNVs, pathReportLog)

@@ -17,7 +17,7 @@ import src.LVCcheck as LVC
 '         Entered with ["full"] when you want to check the entire section.
 '''
 
-pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote1/2101"
+pathHD = "//10.100.10.219/Videos/Recebidos/2021/Lote1/2104"
 SNVsToBeChecked = ["full"]
 
 # Calls the function that will check the files

@@ -1,6 +1,8 @@
 
 import os
 import glob
+
+import pyunpack
 from src.reportLog import updateLog
 
 
@@ -22,7 +24,16 @@ from src.reportLog import updateLog
 # ############################################### #
 
 # Function that checks the integrity of files in HD
-def checkFolders(listSNVs, pathReportLog):
+def checkFolders(pathMain, listSNVs, pathReportLog):
+
+    pathBin = os.path.join(pathMain, "lib", "ffmpeg", "bin")
+    pathScript = os.path.join(pathBin, "ffprobe.exe")
+
+    if (not os.path.isfile(pathScript)):
+        pathRAR = os.path.join(pathBin, "ffprobe.rar")
+        pyunpack.Archive(pathRAR).extractall(pathBin)
+        os.remove(pathRAR)
+
     for i in range(len(listSNVs[3])):
         SNV = listSNVs[3][i]
 

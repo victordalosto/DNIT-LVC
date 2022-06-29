@@ -137,7 +137,7 @@ def checkVideo(SNV, valList, pathReportLog):
             else:
                 duration = 0  # Problem already trated in checkFolders.py
             # Check if duration of video is different than the informed in XML
-            if abs(final - duration) > 10:
+            if abs(final - duration) >= 30:
                 MSG = "A duracao do video: " + str(round(final, 1)) + "segundos apresentado no Logstrecho.xml esta diferente dos " + str(round(duration, 1)) + "segundos do video na pasta: " + local
                 updateLog(SNV, MSG, pathReportLog)
     tolerance = 5
