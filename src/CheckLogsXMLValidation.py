@@ -3,10 +3,11 @@ import os
 import glob
 import json
 import subprocess
+import collections
 
 from src.reportLog import updateLog
 
-skipCheckingDups = True
+skipCheckingDups = False
 
 
 # Update the Report Log with the informations about erros
@@ -20,22 +21,19 @@ def updateReportLoop(SNV, array, MSG, pathReportLog):
 
 
 # Count the number of duplicates values in a array
-def checkDups(SNV, array, tolerance, errorType, pathReportLog):
+def checkDups(SNV, inputArray, tolerance, errorType, pathReportLog):
     if (skipCheckingDups):
         return
-    usedValues = []
+    array = collections.Counter(inputArray)
+    hashSet = set(inputArray)
     # Loop in array to check if values in array are duplicated
-    for num in range(len(array)-1):
-        # Avoid checking the same value in the array
-        value = array[num]
-        if value not in usedValues:
-            usedValues.append(value)  # Avoid reptition
-            amount = array.count(value)  # number of dups
-            amountPercentage = round(amount / len(array)*100, 2)
-            # Update Log if the Sum of the duplicated values is High
-            if amountPercentage > 9 and amount > 4*tolerance:
-                MSG = "Foram encontradas: " + str(amount) + " ocorrencias de valores duplicados = " + str(value) + " do tipo: " + errorType + ". Corresponde a " + str(amountPercentage) + " %"
-                updateLog(SNV, MSG, pathReportLog)
+    for value in hashSet:
+        amount = array.get(value)  # number of dups
+        amountPercentage = round(amount / len(inputArray)*100, 2)
+        # Update Log if the Sum of the duplicated values is High
+        if amountPercentage > 9 and amount > 4*tolerance:
+            MSG = "Foram encontradas: " + str(amount) + " ocorrencias de valores duplicados = " + str(value) + " do tipo: " + errorType + ". Corresponde a " + str(amountPercentage) + " % do trecho."
+            updateLog(SNV, MSG, pathReportLog)
 
 
 # Function that check if values are inside determined specified limit
@@ -191,9 +189,8 @@ def checkCoordinates(SNV, valList, pathReportLog):
     tolerance = 20
     checkDups(SNV, X, tolerance, "Repetidos valores de GPS 'X'", pathReportLog)
     checkDups(SNV, Y, tolerance, "Repetidos valores de GPS 'Y'", pathReportLog)
-    errorType2 = " - Coordenadas GPS Fora do Brasil"
-    checkLimits(SNV, IDS, X, -35, -74, "X" + errorType2, pathReportLog)
-    checkLimits(SNV, IDS, Y, 5.3, -34, "Y" + errorType2, pathReportLog)
+    checkLimits(SNV, IDS, X, -35, -74, "X - Coordenadas GPS Fora do Brasil", pathReportLog)
+    checkLimits(SNV, IDS, Y, 5.3, -34, "Y - Coordenadas GPS Fora do Brasil", pathReportLog)
 
 
 # Check files in ../videos/camera3 folder
@@ -282,5 +279,5 @@ def checkErros(SNV, valList, pathReportLog):
     errosList = valList[15]
     supLim = 100
     infLim = -0.1
-    MSG = "Tag <Error>"
+    MSG = "Tag <Erro>"
     checkLimits(SNV, IDS, errosList, supLim, infLim, MSG, pathReportLog)
