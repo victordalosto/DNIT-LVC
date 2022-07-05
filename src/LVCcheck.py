@@ -9,7 +9,7 @@
 
 import os
 from src.ObtainTrechos import ObtainTrechos
-from src.reportLog import CreateReportLog
+from src.Report import CreateReportLog
 from src.CheckIndex import checkIndex
 from src.CheckFolders import checkFolders
 from src.CheckLogsXML import checkLogsXML

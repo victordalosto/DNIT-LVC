@@ -5,7 +5,7 @@ import json
 import subprocess
 import collections
 
-from src.reportLog import updateLog
+from src.Report import updateLog
 
 skipCheckingDups = False
 

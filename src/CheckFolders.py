@@ -3,7 +3,7 @@ import os
 import glob
 
 import pyunpack
-from src.reportLog import updateLog
+from src.Report import updateLog
 
 
 # ############################################### #

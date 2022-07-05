@@ -3,7 +3,9 @@ import os
 import xml.etree.ElementTree as ET
 
 from src.Utils import isValid
-from src.reportLog import updateLog
+from src.Report import updateLog
+
+Tags = ["IdTrecho", "NomeTrecho", "UnidadeFederativa", "BR"]
 
 
 # Check for inconsistencies in index.xml
@@ -22,7 +24,7 @@ def ObtainTrechos(pathHD, pathReportLog, SNVsToBeChecked):
                 Values = [None] * 4
                 for xml_Element_child in xml_Element:
                     for i in range(len(Values)):
-                        if xml_Element_child.tag in ["IdTrecho", "NomeTrecho", "UnidadeFederativa", "BR"] and isValid(xml_Element_child.text):
+                        if xml_Element_child.tag == Tags[i] and isValid(xml_Element_child.text):
                             Values[i] = xml_Element_child.text
 
                 # Check if the file is in the list to be verified

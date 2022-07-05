@@ -4,7 +4,7 @@ import traceback
 import xml.etree.ElementTree as ET
 
 from src.Utils import isNotValid, printPercentage
-from src.reportLog import updateLog
+from src.Report import updateLog
 from src.CheckLogsXMLValidation import checkOdometer, checkKM, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
 
 typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHora", "TempoLog", "Frente", "Tras", "Velocidade", "Odometro", "Z", "X", "Y", "Azi", "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt", "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
