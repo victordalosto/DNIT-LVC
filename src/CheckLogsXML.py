@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 from src.Utils import isNotValid, printPercentage
 from src.Report import updateLog
-from src.CheckLogsXMLValidation import checkOdometer, checkKM, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
+from src.CheckLogsXMLValidation import checkData, checkOdometer, checkKM, checkTempoLog, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
 
 typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHora", "TempoLog", "Frente", "Tras", "Velocidade", "Odometro", "Z", "X", "Y", "Azi", "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt", "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
 
@@ -91,7 +91,8 @@ def checkLogsXML(listSNVs, pathRep):
 
             try:
                 checkVideo(SNV, finalList, pathRep)
-            except BaseException:
+            except BaseException as e:
+                print(e)
                 updateLog(SNV, Err + "Videos", pathRep)
 
             try:
@@ -125,19 +126,29 @@ def checkLogsXML(listSNVs, pathRep):
                 updateLog(SNV, Err + "Altitude", pathRep)
 
             try:
-                checkErros(SNV, finalList, pathRep)
+                checkTempoLog(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Erros", pathRep)
+                updateLog(SNV, Err + "TempoLog", pathRep)
+                
+            # try:
+            #     checkErros(SNV, finalList, pathRep)
+            # except BaseException:
+            #     updateLog(SNV, Err + "Erros", pathRep)
 
             try:
                 checkPhotos(SNV, KM_INITIAL-KM_FINAL, pathRep)
             except BaseException:
                 updateLog(SNV, Err + "Camera3", pathRep)
 
+            # try:
+            #     checkVelocity(SNV, finalList, pathRep)
+            # except BaseException:
+            #     updateLog(SNV, Err + "Velocidade", pathRep)
+
             try:
-                checkVelocity(SNV, finalList, pathRep)
+                checkData(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Velocidade", pathRep)
+                updateLog(SNV, Err + "Data", pathRep)
 
         except FileNotFoundError:
             MSG = "Nao foi possivel validar o Trecho, pois nao tem o arquivo LogsTrecho.xml no caminho: " + os.path.join(listSNVs[3][iter])

@@ -4,6 +4,7 @@ import glob
 import json
 import subprocess
 import collections
+import re
 
 from src.Report import updateLog
 
@@ -31,7 +32,7 @@ def checkDups(SNV, inputArray, tolerance, errorType, pathReportLog):
         amount = array.get(value)  # number of dups
         amountPercentage = round(amount / len(inputArray)*100, 2)
         # Update Log if the Sum of the duplicated values is High
-        if amountPercentage > 9 and amount > 4*tolerance:
+        if amountPercentage > 25 and amount > 8*tolerance:
             MSG = "Foram encontradas: " + str(amount) + " ocorrencias de valores duplicados = " + str(value) + " do tipo: " + errorType + ". Corresponde a " + str(amountPercentage) + " % do trecho."
             updateLog(SNV, MSG, pathReportLog)
 
@@ -141,10 +142,10 @@ def checkVideo(SNV, valList, pathReportLog):
                 MSG = "A duracao do video: " + str(round(final, 1)) + "segundos apresentado no Logstrecho.xml esta diferente dos " + str(round(duration, 1)) + "segundos do video na pasta: " + local
                 updateLog(SNV, MSG, pathReportLog)
     tolerance = 5
-    checkDups(SNV, frontT, tolerance, "Valores iguais de tempo Camera 'Frente'", pathReportLog)
-    checkDups(SNV, backT, tolerance, "Valores iguais de tempo Camera 'Traseira'", pathReportLog)
-    checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
-    checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
+    # checkDups(SNV, frontT, tolerance, "Valores iguais de tempo Camera 'Frente'", pathReportLog)
+    # checkDups(SNV, backT, tolerance, "Valores iguais de tempo Camera 'Traseira'", pathReportLog)
+    # checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
+    # checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
     if frontT[0] > 60 or backT[0] > 60:
         MSG = "Solicita verificacao nos primeiros valores timings de video."
         MSG += "Valores parecem estar acima do comum. "
@@ -230,8 +231,8 @@ def checkVelocity(SNV, valList, pathReportLog):
     IDS = valList[0]
     vel1 = valList[3]
     vel2 = valList[9]
-    tolerance = 30
-    checkDups(SNV, vel1, tolerance, "Velocidade", pathReportLog)
+    # tolerance = 100
+    # checkDups(SNV, vel1, tolerance, "Velocidade", pathReportLog)
     # Number of times that velocity appears >= 60km *(1 + 10%)
     supLim = 66
     infLim = -0.1
@@ -281,3 +282,34 @@ def checkErros(SNV, valList, pathReportLog):
     infLim = -0.1
     MSG = "Tag <Erro>"
     checkLimits(SNV, IDS, errosList, supLim, infLim, MSG, pathReportLog)
+
+
+# Check the Erros Tag in XML file
+def checkData(SNV, valList, pathReportLog):
+    value = str(valList[5][0])
+    expressao = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{2}:\d{2}')
+    try:
+        if not (re.match(expressao, value)):
+            print('   #### ERRO DATA')
+    except BaseException as e:
+        print(e)
+
+
+def checkTempoLog(SNV, valList, pathReportLog):
+    # Handled values in checking
+    IDS = valList[0]
+    tempoLog = valList[6]
+    frente = valList[7]
+    tras = valList[8]
+    ERROS = []  # Inconsistencys stored in an Array: ERROS[[], ..[]]
+    MSGS = "Tempo Log incoerente"
+    # Loop inside odometer values
+    for j in range(len(tempoLog)-1):
+        step1 = abs(tempoLog[j] - frente[j]*1000)
+        step2 = abs(tempoLog[j] - tras[j]*1000)
+        # if (step1 > 200 or step2 > 200):
+        #     ERROS.append(IDS[j])
+        step3 = tempoLog[j+1] - tempoLog[j]
+        if (step3 < 0):
+            ERROS.append(IDS[j])
+    updateReportLoop(SNV, ERROS, MSGS, pathReportLog)
