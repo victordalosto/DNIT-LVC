@@ -20,9 +20,6 @@ import src.LVCcheck as LVC
 ''''''
 SNVsToBeChecked = ["full"]
 
-#pathHD = "\\\\10.100.10.219\\Videos\\Recebidos\\2022\\Lote3\\3304"
-pathHD = "F:\\3316"
+# pathHD = "D:\\correcoes\\3312"
+pathHD = "\\\\10.100.10.219\\Videos$\\Recebidos\\2022\\Lote3\\3314"
 LVC.check(pathHD, SNVsToBeChecked)
-
-
-# Calls the function that will check the files

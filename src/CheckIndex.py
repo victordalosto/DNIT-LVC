@@ -17,6 +17,7 @@ def checkIndex(pathHD, listToCheck, pathReportLog):
 
     # Path to the index.xml used as import of HD
     pathIndex = os.path.join(pathHD, "index.xml")
+    print("Caminho: "+ pathIndex)
     try:
         for xml_elem in (ET.parse(pathIndex)).iter():
             TagValues = [None] * 12
