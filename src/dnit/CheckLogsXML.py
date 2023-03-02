@@ -1,10 +1,9 @@
-
 import os
 import traceback
 import xml.etree.ElementTree as ET
 
 from src.dnit.Utils import isNotValid, printPercentage
-from src.dnit.Report import updateLog
+from src.dnit.Logger import update_log
 from src.dnit.CheckLogsXMLValidation import checkData, checkOdometer, checkKM, checkTempoLog, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
 
 typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHora", "TempoLog", "Frente", "Tras", "Velocidade", "Odometro", "Z", "X", "Y", "Azi", "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt", "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
@@ -63,17 +62,17 @@ def checkLogsXML(listSNVs, pathRep):
 
                     for attribute in range(len(valList)):
                         if isNotValid(valList[attribute]):  # Check if null
-                            updateLog(SNV, "Valor Null encontrado para " + typeList[attribute] + ". Valor no id: " + str(int(valList[0])), pathRep)
+                            update_log(SNV, "Valor Null encontrado para " + typeList[attribute] + ". Valor no id: " + str(int(valList[0])), pathRep)
                         if attribute not in [5, 17, 22, 23]:  # Shoulb be a number
                             try:
                                 valList[attribute] = round(float(valList[attribute]), 10)
                             except BaseException:
-                                updateLog(SNV, "Not a Number encontrado para " + typeList[attribute] + ". Valor no id: " + str(valList[0]), pathRep)
+                                update_log(SNV, "Not a Number encontrado para " + typeList[attribute] + ". Valor no id: " + str(valList[0]), pathRep)
                     for nn in range(len(valList)):
                         finalList[nn].append(valList[nn])
                 except BaseException:
                     MSG = "Error no arquivo xml - " + traceback.format_exc()
-                    updateLog(SNV, MSG, pathRep)
+                    update_log(SNV, MSG, pathRep)
 
             # Pattern in message in case of a throwable error
             Err = "Erro no arquivo LogsTrecho.XML - Nao foi possivel verificar: "
@@ -82,53 +81,53 @@ def checkLogsXML(listSNVs, pathRep):
             try:
                 checkOdometer(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Odometro", pathRep)
+                update_log(SNV, Err + "Odometro", pathRep)
 
             try:
                 checkKM(SNV, KmsINDEX, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "KMs", pathRep)
+                update_log(SNV, Err + "KMs", pathRep)
 
             try:
                 checkVideo(SNV, finalList, pathRep)
             except BaseException as e:
                 print(e)
-                updateLog(SNV, Err + "Videos", pathRep)
+                update_log(SNV, Err + "Videos", pathRep)
 
             try:
                 checkIRI(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "IRIs", pathRep)
+                update_log(SNV, Err + "IRIs", pathRep)
 
             try:
                 checkFlecha(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Flechas", pathRep)
+                update_log(SNV, Err + "Flechas", pathRep)
 
             try:
                 checkAzimute(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Azimute", pathRep)
+                update_log(SNV, Err + "Azimute", pathRep)
 
             try:
                 checkSatelites(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Satelites", pathRep)
+                update_log(SNV, Err + "Satelites", pathRep)
 
             try:
                 checkCoordinates(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "GPS", pathRep)
+                update_log(SNV, Err + "GPS", pathRep)
 
             try:
                 checkAltitude(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Altitude", pathRep)
+                update_log(SNV, Err + "Altitude", pathRep)
 
             try:
                 checkTempoLog(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "TempoLog", pathRep)
+                update_log(SNV, Err + "TempoLog", pathRep)
                 
             # try:
             #     checkErros(SNV, finalList, pathRep)
@@ -138,7 +137,7 @@ def checkLogsXML(listSNVs, pathRep):
             try:
                 checkPhotos(SNV, KM_INITIAL-KM_FINAL, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Camera3", pathRep)
+                update_log(SNV, Err + "Camera3", pathRep)
 
             # try:
             #     checkVelocity(SNV, finalList, pathRep)
@@ -148,19 +147,19 @@ def checkLogsXML(listSNVs, pathRep):
             try:
                 checkData(SNV, finalList, pathRep)
             except BaseException:
-                updateLog(SNV, Err + "Data", pathRep)
+                update_log(SNV, Err + "Data", pathRep)
 
         except FileNotFoundError:
             MSG = "Nao foi possivel validar o Trecho, pois nao tem o arquivo LogsTrecho.xml no caminho: " + os.path.join(listSNVs[3][iter])
-            updateLog(SNV, MSG, pathRep)
+            update_log(SNV, MSG, pathRep)
 
         except ET.ParseError:
             MSG = "Invalid Token in LogsTrecho.XML"
-            updateLog(SNV, MSG, pathRep)
+            update_log(SNV, MSG, pathRep)
 
         except BaseException:
             MSG = "Erro durante a verificacao dos LogsTrecho.xml" + os.path.join(listSNVs[3][iter])
-            updateLog(SNV, MSG, pathRep)
+            update_log(SNV, MSG, pathRep)
 
         # Update Log, informing that checkings were done on ROAD SNV
-        updateLog(SNV, "Verificacao Concluida", pathRep)
+        update_log(SNV, "Verificacao Concluida", pathRep)

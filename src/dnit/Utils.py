@@ -11,8 +11,7 @@ def printPercentage(SNVsName, percentage):
 def isValid(string):
     if (string is not None) and (string != "") and (string != " "):
         return True
-    else:
-        return False
+    return False
 
 
 def isNotValid(string):

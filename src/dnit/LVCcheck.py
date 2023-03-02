@@ -1,4 +1,3 @@
-
 # ============================================================== #
 # SCRIPT NAME : LVC check.py
 # AUTHOR      : Victor Hugo Dalosto de Oliveira
@@ -8,33 +7,32 @@
 # ============================================================== #
 
 import os
-from src.dnit.ObtainTrechos import ObtainTrechos
-from src.dnit.Report import CreateReportLog
+import src.dnit.Logger as Logger
+import src.dnit.Index as Index
 from src.dnit.CheckIndex import checkIndex
 from src.dnit.CheckFolders import checkFolders
 from src.dnit.CheckLogsXML import checkLogsXML
 
-
-def check(pathHD, SNVsToBeChecked):
+def check(path_hd, snvs_to_be_checked):
     # Path to the script
-    pathMain = os.path.dirname(os.path.dirname(__file__))
+    path_main = os.path.dirname(os.path.dirname(__file__))
 
     # Change the path of the directory to ffmpeg script ffprobe.exe
-    os.chdir(os.path.join(pathMain, "lib", "ffmpeg", 'bin'))
+    os.chdir(os.path.join(path_main, "lib", "ffmpeg", 'bin'))
 
     # Create an repot log file with all checking done on files
-    pathReportLog = CreateReportLog(pathMain)
+    path_logger = Logger.create_report_log(os.path.join(path_main, "logs"))
 
     # Obtains the List of roads SNVs to be checked
-    listToCheck = ObtainTrechos(pathHD, pathReportLog, SNVsToBeChecked)
+    listToCheck = Index.get_ids(path_hd, path_logger, snvs_to_be_checked)
 
     # Check for inconsistencies in Index.xml
-    listSNVs = checkIndex(pathHD, listToCheck, pathReportLog)
+    listSNVs = checkIndex(path_hd, listToCheck, path_logger)
 
     # Check the integrity and structure of files and folders
-    checkFolders(pathMain, listSNVs, pathReportLog)
+    checkFolders(path_main, listSNVs, path_logger)
 
     # Check all DATA inside the LogsTrecho.XML files
-    checkLogsXML(listSNVs, pathReportLog)
+    checkLogsXML(listSNVs, path_logger)
 
     print("Verificaçao concluida com sucesso LVC Check - 100%")

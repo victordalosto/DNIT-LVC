@@ -6,7 +6,7 @@ import subprocess
 import collections
 import re
 
-from src.dnit.Report import updateLog
+from src.dnit.Logger import update_log
 
 skipCheckingDups = False
 
@@ -18,7 +18,7 @@ def updateReportLoop(SNV, array, MSG, pathReportLog):
         for iterIDs in range(len(array)-1):
             ERRORMSG += str(int(array[iterIDs])) + ", "
         ERRORMSG += str(int(array[len(array)-1])) + "."
-        updateLog(SNV, ERRORMSG, pathReportLog)
+        update_log(SNV, ERRORMSG, pathReportLog)
 
 
 # Count the number of duplicates values in a array
@@ -34,7 +34,7 @@ def checkDups(SNV, inputArray, tolerance, errorType, pathReportLog):
         # Update Log if the Sum of the duplicated values is High
         if amountPercentage > 25 and amount > 8*tolerance:
             MSG = "Foram encontradas: " + str(amount) + " ocorrencias de valores duplicados = " + str(value) + " do tipo: " + errorType + ". Corresponde a " + str(amountPercentage) + " % do trecho."
-            updateLog(SNV, MSG, pathReportLog)
+            update_log(SNV, MSG, pathReportLog)
 
 
 # Function that check if values are inside determined specified limit
@@ -113,10 +113,10 @@ def checkKM(SNV, KMsIndex, valList, pathReportLog):
     finalLog = listOdometer[-1]/1000
     if abs(initLog - initIndex) >= 0.01:
         MSG = "KM Inicial no index.xml (" + str(round(initIndex, 3)) + ") =/= LogsTrechos.xml (" + str(round(initLog, 3)) + ")"
-        updateLog(SNV, MSG, pathReportLog)
+        update_log(SNV, MSG, pathReportLog)
     if abs(finalLog - finalIndex) >= 0.01:
         MSG = "KM Final no index.xml (" + str(round(finalIndex, 3)) + ") =/= LogsTrechos.xml (" + str(round(finalLog, 3)) + ")"
-        updateLog(SNV, MSG, pathReportLog)
+        update_log(SNV, MSG, pathReportLog)
 
 
 # Check if video timings are correct
@@ -140,7 +140,7 @@ def checkVideo(SNV, valList, pathReportLog):
             # Check if duration of video is different than the informed in XML
             if abs(final - duration) >= 30:
                 MSG = "A duracao do video: " + str(round(final, 1)) + "segundos apresentado no Logstrecho.xml esta diferente dos " + str(round(duration, 1)) + "segundos do video na pasta: " + local
-                updateLog(SNV, MSG, pathReportLog)
+                update_log(SNV, MSG, pathReportLog)
     tolerance = 5
     # checkDups(SNV, frontT, tolerance, "Valores iguais de tempo Camera 'Frente'", pathReportLog)
     # checkDups(SNV, backT, tolerance, "Valores iguais de tempo Camera 'Traseira'", pathReportLog)
@@ -149,7 +149,7 @@ def checkVideo(SNV, valList, pathReportLog):
     if frontT[0] > 60 or backT[0] > 60:
         MSG = "Solicita verificacao nos primeiros valores timings de video."
         MSG += "Valores parecem estar acima do comum. "
-        updateLog(SNV, MSG, pathReportLog)
+        update_log(SNV, MSG, pathReportLog)
 
 
 # Check if IRI values are correct
@@ -208,7 +208,7 @@ def checkPhotos(SNV, extension, pathReportLog):
                 images += 1
                 # Check if image is corrupted
                 if os.path.getsize(pathI) == 0:
-                    updateLog(SNV, file + " na pasta camera3 esta corrompida", pathReportLog)
+                    update_log(SNV, file + " na pasta camera3 esta corrompida", pathReportLog)
                 file, type = os.path.splitext(file)
                 try:
                     if float(file) < 0 or float(file) > (extension*1000+150):
@@ -218,12 +218,12 @@ def checkPhotos(SNV, extension, pathReportLog):
     # Print messages that are outside the Road SNV limit
     if MSG != "":
         newMSG = "Problema com formato de arquivos ou fora dos limites index na pasta camera3: " + MSG
-        updateLog(SNV, newMSG, pathReportLog)
+        update_log(SNV, newMSG, pathReportLog)
     extensionPhoto = images*5/1000
     # Print error if folder has number of photos different than the Road SNV
     if (extensionPhoto < 0.95*extension or extensionPhoto > 1.15*extension):
         MSG = "Problema relacionado ao numero de foto. Extensao no index (" + str(round(extension, 2)) + "km) =/= " + str(images) + "  x 5m (" + str(round(extensionPhoto, 2)) + "km). Fotos deveriam estar espacadas de 5-5m, e nao " + str(round(extension*1000/images, 1)) + "m"
-        updateLog(SNV, MSG, pathReportLog)
+        update_log(SNV, MSG, pathReportLog)
 
 
 # Check if velocity informations are correct
