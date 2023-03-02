@@ -6,7 +6,7 @@ import subprocess
 import collections
 import re
 
-from src.Report import updateLog
+from src.dnit.Report import updateLog
 
 skipCheckingDups = False
 

@@ -1,1 +1,0 @@
-Folder where All the Logs are stored

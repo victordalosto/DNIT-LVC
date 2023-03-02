@@ -2,8 +2,8 @@
 import os
 import xml.etree.ElementTree as ET
 
-from src.Utils import isValid
-from src.Report import updateLog
+from src.dnit.Utils import isValid
+from src.dnit.Report import updateLog
 
 Tags = ["IdTrecho", "NomeTrecho", "UnidadeFederativa", "BR"]
 

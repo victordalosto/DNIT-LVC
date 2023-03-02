@@ -6,7 +6,7 @@
 # Check if files are apt. to be approved and codificated
 # ============================================================== #
 
-import src.LVCcheck as LVC
+import src.dnit.LVCcheck as LVC
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Parameters used in the check.                                           '
@@ -17,9 +17,7 @@ import src.LVCcheck as LVC
 '        Entered with ["full"] when you want to check the entire section. '
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''
 SNVsToBeChecked = ["full"]
 
-# pathHD = "D:\\correcoes\\3312"
-pathHD = "\\\\10.100.10.219\\Videos$\\Recebidos\\2022\\Lote3\\3314"
+pathHD = "\\\\10.100.10.219\\Videos\\Recebidos\\2022\\Lote3\\3310"
 LVC.check(pathHD, SNVsToBeChecked)

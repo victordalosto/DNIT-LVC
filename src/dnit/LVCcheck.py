@@ -8,16 +8,16 @@
 # ============================================================== #
 
 import os
-from src.ObtainTrechos import ObtainTrechos
-from src.Report import CreateReportLog
-from src.CheckIndex import checkIndex
-from src.CheckFolders import checkFolders
-from src.CheckLogsXML import checkLogsXML
+from src.dnit.ObtainTrechos import ObtainTrechos
+from src.dnit.Report import CreateReportLog
+from src.dnit.CheckIndex import checkIndex
+from src.dnit.CheckFolders import checkFolders
+from src.dnit.CheckLogsXML import checkLogsXML
 
 
 def check(pathHD, SNVsToBeChecked):
     # Path to the script
-    pathMain = os.getcwd()
+    pathMain = os.path.dirname(os.path.dirname(__file__))
 
     # Change the path of the directory to ffmpeg script ffprobe.exe
     os.chdir(os.path.join(pathMain, "lib", "ffmpeg", 'bin'))
@@ -37,6 +37,4 @@ def check(pathHD, SNVsToBeChecked):
     # Check all DATA inside the LogsTrecho.XML files
     checkLogsXML(listSNVs, pathReportLog)
 
-    # Print in the Promp tha all validations were done
-    os.chdir(pathMain)
     print("Verificaçao concluida com sucesso LVC Check - 100%")

@@ -3,8 +3,8 @@ import os
 import traceback
 import xml.etree.ElementTree as ET
 
-from src.Utils import isNotValid, isValid
-from src.Report import updateLog
+from src.dnit.Utils import isNotValid, isValid
+from src.dnit.Report import updateLog
 
 UFs = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
 Tags = ["IdTrecho", "NomeTrecho", "DataLevantamentoTrecho", "PlacaCarro", "UnidadeFederativa", "BR", "TipoTrecho", "Pista", "Sentido", "KmInicial", "KmFinal", "CaminhoPasta"]

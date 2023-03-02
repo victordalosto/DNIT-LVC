@@ -2,14 +2,14 @@
 import os
 from datetime import datetime
 
-from src.Utils import isValid
+from src.dnit.Utils import isValid
 
 
 # Create a report log.txt file with all checking done on files
 def CreateReportLog(pathMain):
     # Create a log file named as the current date in the Folder ../Main/lib/
     # File named as LOG_dd_mm_yyyy_hh_mm_ss
-    TEXT = "LOG_" + datetime.now().strftime("%Y_%m_%d_%Hh_%Mm_%Ss") + ".txt"
+    TEXT = "LOG-" + datetime.now().strftime("%Y_%m_%d___%Hh_%Mm") + ".txt"
     pathReportLog = os.path.join(pathMain, "Logs", TEXT)
     if os.path.isfile(pathReportLog) is False:
         # Create a LOG.txt
