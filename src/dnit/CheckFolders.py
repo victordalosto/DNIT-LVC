@@ -24,7 +24,7 @@ from src.dnit.Logger import update_log
 # ############################################### #
 
 # Function that checks the integrity of files in HD
-def checkFolders(pathMain, listSNVs, pathReportLog):
+def check(pathMain, listSNVs, pathReportLog):
 
     pathBin = os.path.join(pathMain, "lib", "ffmpeg", "bin")
     pathScript = os.path.join(pathBin, "ffprobe.exe")

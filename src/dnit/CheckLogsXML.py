@@ -2,7 +2,7 @@ import os
 import traceback
 import xml.etree.ElementTree as ET
 
-from src.dnit.Utils import isNotValid, printPercentage
+from src.dnit.Utils import is_not_valid, print_percentage
 from src.dnit.Logger import update_log
 from src.dnit.CheckLogsXMLValidation import checkData, checkOdometer, checkKM, checkTempoLog, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
 
@@ -10,7 +10,7 @@ typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHor
 
 
 # Check informations inside LogsTrecho.xml and its integrity
-def checkLogsXML(listSNVs, pathRep):
+def check(listSNVs, pathRep):
 
     # Loop to get all Roads SNV
     for iter in range(len(listSNVs[0])):
@@ -22,7 +22,7 @@ def checkLogsXML(listSNVs, pathRep):
         SNV = listSNVs[3][iter]
 
         # Print the % concluded of the DATA validation
-        printPercentage(NAME, round(iter/len(listSNVs[0])*100, 2))
+        print_percentage(NAME, round(iter/len(listSNVs[0])*100, 2))
 
         try:
             # Gets the informations inside LogsTrecho.XML
@@ -61,7 +61,7 @@ def checkLogsXML(listSNVs, pathRep):
                     valList[23] = xmlTAG[0][i][2].attrib.get(typeList[23])
 
                     for attribute in range(len(valList)):
-                        if isNotValid(valList[attribute]):  # Check if null
+                        if is_not_valid(valList[attribute]):  # Check if null
                             update_log(SNV, "Valor Null encontrado para " + typeList[attribute] + ". Valor no id: " + str(int(valList[0])), pathRep)
                         if attribute not in [5, 17, 22, 23]:  # Shoulb be a number
                             try:
@@ -129,20 +129,20 @@ def checkLogsXML(listSNVs, pathRep):
             except BaseException:
                 update_log(SNV, Err + "TempoLog", pathRep)
                 
-            # try:
-            #     checkErros(SNV, finalList, pathRep)
-            # except BaseException:
-            #     updateLog(SNV, Err + "Erros", pathRep)
+            try:
+                checkErros(SNV, finalList, pathRep)
+            except BaseException:
+                update_log(SNV, Err + "Erros", pathRep)
 
             try:
                 checkPhotos(SNV, KM_INITIAL-KM_FINAL, pathRep)
             except BaseException:
                 update_log(SNV, Err + "Camera3", pathRep)
 
-            # try:
-            #     checkVelocity(SNV, finalList, pathRep)
-            # except BaseException:
-            #     updateLog(SNV, Err + "Velocidade", pathRep)
+            try:
+                checkVelocity(SNV, finalList, pathRep)
+            except BaseException:
+                update_log(SNV, Err + "Velocidade", pathRep)
 
             try:
                 checkData(SNV, finalList, pathRep)

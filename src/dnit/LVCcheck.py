@@ -9,9 +9,8 @@
 import os
 import src.dnit.Logger as Logger
 import src.dnit.Index as Index
-from src.dnit.CheckIndex import checkIndex
-from src.dnit.CheckFolders import checkFolders
-from src.dnit.CheckLogsXML import checkLogsXML
+import src.dnit.Checker as Checker
+import src.dnit.CheckIndex as CheckIndex
 
 def check(path_hd, snvs_to_be_checked):
     # Path to the script
@@ -27,12 +26,12 @@ def check(path_hd, snvs_to_be_checked):
     listToCheck = Index.get_ids(path_hd, path_logger, snvs_to_be_checked)
 
     # Check for inconsistencies in Index.xml
-    listSNVs = checkIndex(path_hd, listToCheck, path_logger)
+    list_snvs = Checker.index(path_hd, listToCheck, path_logger)
 
     # Check the integrity and structure of files and folders
-    checkFolders(path_main, listSNVs, path_logger)
+    Checker.folder(path_main, list_snvs, path_logger)
 
     # Check all DATA inside the LogsTrecho.XML files
-    checkLogsXML(listSNVs, path_logger)
+    Checker.LogsTrecho(list_snvs, path_logger)
 
     print("Verificaçao concluida com sucesso LVC Check - 100%")

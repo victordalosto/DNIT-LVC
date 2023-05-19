@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from src.dnit.Utils import isValid
+from src.dnit.Utils import is_valid
 
 # Create a report log.txt file with all checking done on files
 def create_report_log(path_logs):
@@ -18,7 +18,7 @@ def create_report_log(path_logs):
 
 # Function that updates the Log with a new status
 def update_log(header, message, path_logger):
-    if (isValid(message)):
+    if (is_valid(message)):
         message = "  * " + message
         header = header.replace("/", "\\") # Fix the notation to windows path
         list_lines = (open(path_logger, "r")).readlines()

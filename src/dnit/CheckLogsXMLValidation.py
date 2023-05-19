@@ -144,8 +144,8 @@ def checkVideo(SNV, valList, pathReportLog):
     tolerance = 5
     # checkDups(SNV, frontT, tolerance, "Valores iguais de tempo Camera 'Frente'", pathReportLog)
     # checkDups(SNV, backT, tolerance, "Valores iguais de tempo Camera 'Traseira'", pathReportLog)
-    # checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
-    # checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
+    checkDuration(SNV, pathFront, max(frontT), "Camera 1", pathReportLog)
+    checkDuration(SNV, pathBack, max(backT), "Camera 2", pathReportLog)
     if frontT[0] > 60 or backT[0] > 60:
         MSG = "Solicita verificacao nos primeiros valores timings de video."
         MSG += "Valores parecem estar acima do comum. "

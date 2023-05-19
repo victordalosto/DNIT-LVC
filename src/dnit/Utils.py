@@ -1,6 +1,6 @@
 
 # Print the percentage of validation done in Prompt
-def printPercentage(SNVsName, percentage):
+def print_percentage(SNVsName, percentage):
     SNVsName = str(SNVsName)
     percentage = str(percentage)
     MSG = "Trecho " + SNVsName + " - " + percentage + "%"
@@ -8,11 +8,15 @@ def printPercentage(SNVsName, percentage):
 
 
 # Check if parameter is valid
-def isValid(string):
+def is_valid(string):
     if (string is not None) and (string != "") and (string != " "):
         return True
     return False
 
 
-def isNotValid(string):
-    return not (isValid(string))
+def is_not_valid(string):
+    return not (is_valid(string))
+
+
+def get_UFs():
+    return ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]

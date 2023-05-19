@@ -9,7 +9,7 @@
 import os
 import xml.etree.ElementTree as ET
 
-from src.dnit.Utils import isValid
+from src.dnit.Utils import is_valid
 from src.dnit.Logger import update_log
 
 
@@ -24,7 +24,6 @@ def get_ids(path_hd, path_logger, snvs_to_be_checked):
             if xml_element.tag == "Trecho":
                 for node in xml_element:
                     if (node.tag == "IdTrecho"):
-                        print(node.text)
                         if ((str(snvs_to_be_checked[0]).lower() == "full") or \
                            (node.text in snvs_to_be_checked)):
                             list_to_check.append(node.text)
