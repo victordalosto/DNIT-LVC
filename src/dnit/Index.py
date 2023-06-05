@@ -16,12 +16,14 @@ from src.dnit.Logger import update_log
 # Check for inconsistencies in index.xml
 def get_ids_from_xml(path_root_hd, logger, array_snvs):
     index = os.path.join(path_root_hd, "index.xml")
+    print(index)
     try:
         ids_to_check = []
         text_excluded_trechos = ""
         for xml_element in (ET.parse(index)).iter():
             getID(array_snvs, ids_to_check, text_excluded_trechos, xml_element)
         log_snvs_not_included(logger, text_excluded_trechos)
+        print(ids_to_check)
     except BaseException:
         update_log("GERAL", "Nao foi possivel encontrar o arquivo index.xml ", logger)
         exit()
@@ -40,7 +42,7 @@ def getID(array_snvs, ids, text_excluded_trechos, xml_element):
 
 
 def isAValidId(array_snvs, node):
-    if (array_snvs == "full"):
+    if (str(array_snvs[0]) == "full"):
         return True
     for snv in array_snvs:
         if (str(node.text) == str(snv)):

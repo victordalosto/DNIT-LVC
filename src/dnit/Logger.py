@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from src.dnit.Utils import is_valid
 
+
 # Create a report log.txt file with all checking done on files
 def create_report_logger(path_logs):
     log_file = "LOG-" + datetime.now().strftime("%Y_%m_%d___%Hh_%Mm") + ".txt"
@@ -15,6 +16,7 @@ def create_report_logger(path_logs):
     Log.writelines(header)
     Log.close()
     return path_report_log
+
 
 # Function that updates the Log with a new status
 def update_log(header, message, path_logger):

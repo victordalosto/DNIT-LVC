@@ -18,7 +18,8 @@ import src.dnit.LVCcheck as LVC
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
-hd = "\\\\10.100.10.219\\Videos\\Recebidos\\2022\\Lote3\\3310"
-list_snvs = [7, 10]
+root = "\\\\10.100.10.219\\Videos\\Recebidos\\2022\\Lote3\\3310"
+root = "D:\\sist-down\\Videos\\Recebidos\\2023\\Lote2\\4201"
+list_ids = ["full"]
 
-LVC.check(hd, list_snvs)
+LVC.check(root, list_ids)
