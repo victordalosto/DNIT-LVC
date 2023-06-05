@@ -3,7 +3,7 @@ from datetime import datetime
 from src.dnit.Utils import is_valid
 
 # Create a report log.txt file with all checking done on files
-def create_report_log(path_logs):
+def create_report_logger(path_logs):
     log_file = "LOG-" + datetime.now().strftime("%Y_%m_%d___%Hh_%Mm") + ".txt"
     path_report_log = os.path.join(path_logs, log_file)
     if os.path.isfile(path_report_log) is False:

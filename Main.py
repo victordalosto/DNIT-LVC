@@ -9,16 +9,16 @@
 import src.dnit.LVCcheck as LVC
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Parameters used in the check.                                            '
+' Parameters used in the LVC.check() function                              '
+'                                                                          '
+' @param list_snvs (array) - Informs the sections which will be checked.   '  
+'        Specify ["full"] when you want to check the entire folder         '
 '                                                                          '
 ' @param hd (String) - Provides the path in the folder to be checked.      '
-'                                                                          '
-' @param list_snvs (array) - Informs  sections will be checked.            '  
-'        Entered with ["full"] when you want to check the entire section.  '
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
 hd = "\\\\10.100.10.219\\Videos\\Recebidos\\2022\\Lote3\\3310"
-list_snvs = ["full"]
+list_snvs = [7, 10]
 
 LVC.check(hd, list_snvs)

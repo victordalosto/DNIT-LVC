@@ -14,28 +14,40 @@ from src.dnit.Logger import update_log
 
 
 # Check for inconsistencies in index.xml
-def get_ids(path_hd, path_logger, snvs_to_be_checked):
-    index = os.path.join(path_hd, "index.xml")
+def get_ids_from_xml(path_root_hd, logger, array_snvs):
+    index = os.path.join(path_root_hd, "index.xml")
     try:
-        list_to_check = []
+        ids_to_check = []
         text_excluded_trechos = ""
         for xml_element in (ET.parse(index)).iter():
-            # Tags That contains <Trecho> are verified here
-            if xml_element.tag == "Trecho":
-                for node in xml_element:
-                    if (node.tag == "IdTrecho"):
-                        if ((str(snvs_to_be_checked[0]).lower() == "full") or \
-                           (node.text in snvs_to_be_checked)):
-                            list_to_check.append(node.text)
-                        else:
-                            text_excluded_trechos += node.text + "; "
-        # Update ReportLog with Roads SNVs that hasn't been checked
-        if text_excluded_trechos != "":
-            update_log("GERAL", "Ids excluidos da verificacao: " + text_excluded_trechos, path_logger)
-
+            getID(array_snvs, ids_to_check, text_excluded_trechos, xml_element)
+        log_snvs_not_included(logger, text_excluded_trechos)
     except BaseException:
-        update_log("GERAL", "Nao foi possivel encontrar o arquivo index.xml ", path_logger)
+        update_log("GERAL", "Nao foi possivel encontrar o arquivo index.xml ", logger)
         exit()
-
     finally:
-        return list_to_check
+        return ids_to_check
+
+
+def getID(array_snvs, ids, text_excluded_trechos, xml_element):
+    if xml_element.tag == "Trecho":
+        for node in xml_element:
+            if (node.tag == "IdTrecho"):
+                if (isAValidId(array_snvs, node)):
+                    ids.append(node.text)
+                else:
+                    text_excluded_trechos += node.text + "; "
+
+
+def isAValidId(array_snvs, node):
+    if (array_snvs == "full"):
+        return True
+    for snv in array_snvs:
+        if (str(node.text) == str(snv)):
+            return True
+    return False
+
+
+def log_snvs_not_included(logger, text_excluded_trechos):
+    if text_excluded_trechos != "":
+        update_log("GERAL", "Ids excluidos da verificacao pois não foi encontrado: " + text_excluded_trechos, logger)

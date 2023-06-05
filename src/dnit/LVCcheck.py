@@ -1,18 +1,10 @@
-# ============================================================== #
-# SCRIPT NAME : LVC check.py
-# AUTHOR      : Victor Hugo Dalosto de Oliveira
-# EMAIL       : victordalosto@gmail.com
-# DESCRIPTION : Script to check inconsistencies in LVC data
-# Check if files are apt. to be approved and codificated
-# ============================================================== #
-
 import os
 import src.dnit.Logger as Logger
 import src.dnit.Index as Index
 import src.dnit.Checker as Checker
 import src.dnit.CheckIndex as CheckIndex
 
-def check(path_hd, snvs_to_be_checked):
+def check(folder, array_snvs):
     # Path to the script
     path_main = os.path.dirname(os.path.dirname(__file__))
 
@@ -20,18 +12,18 @@ def check(path_hd, snvs_to_be_checked):
     os.chdir(os.path.join(path_main, "lib", "ffmpeg", 'bin'))
 
     # Create an repot log file with all checking done on files
-    path_logger = Logger.create_report_log(os.path.join(path_main, "logs"))
+    logger = Logger.create_report_logger(os.path.join(path_main, "logs"))
 
     # Obtains the List of roads SNVs to be checked
-    listToCheck = Index.get_ids(path_hd, path_logger, snvs_to_be_checked)
+    array_ids = Index.get_ids_from_xml(folder, logger, array_snvs)
 
     # Check for inconsistencies in Index.xml
-    list_snvs = Checker.index(path_hd, listToCheck, path_logger)
+    array_snv_infos = Checker.index(folder, array_ids, logger)
 
     # Check the integrity and structure of files and folders
-    Checker.folder(path_main, list_snvs, path_logger)
+    Checker.folder(path_main, array_snv_infos, logger)
 
     # Check all DATA inside the LogsTrecho.XML files
-    Checker.LogsTrecho(list_snvs, path_logger)
+    Checker.LogsTrecho(array_snv_infos, logger)
 
     print("Verificaçao concluida com sucesso LVC Check - 100%")
