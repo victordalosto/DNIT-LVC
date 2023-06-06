@@ -21,6 +21,6 @@ def check(root, array_snvs):
     Checker.folder(path_main, array_snv_infos, logger)
 
     # Check all DATA inside the LogsTrecho.XML files
-    Checker.LogsTrecho(array_snv_infos, logger)
+    Checker.logsTrecho(array_snv_infos, logger)
 
     print("Verificaçao concluida com sucesso LVC Check - 100%")
