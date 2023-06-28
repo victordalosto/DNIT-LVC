@@ -23,7 +23,6 @@ def get_ids_from_xml(path_root_hd, logger, array_snvs):
         for xml_element in (ET.parse(index)).iter():
             getID(array_snvs, ids_to_check, text_excluded_trechos, xml_element)
         log_snvs_not_included(logger, text_excluded_trechos)
-        print(ids_to_check)
     except BaseException:
         update_log("GERAL", "Nao foi possivel encontrar o arquivo index.xml ", logger)
         exit()

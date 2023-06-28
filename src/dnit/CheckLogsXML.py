@@ -91,7 +91,6 @@ def check(listSNVs, pathRep):
             try:
                 checkVideo(SNV, finalList, pathRep)
             except BaseException as e:
-                print(e)
                 update_log(SNV, Err + "Videos", pathRep)
 
             try:

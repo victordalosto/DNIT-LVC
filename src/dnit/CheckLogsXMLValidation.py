@@ -287,12 +287,12 @@ def checkErros(SNV, valList, pathReportLog):
 # Check the Erros Tag in XML file
 def checkData(SNV, valList, pathReportLog):
     value = str(valList[5][0])
-    expressao = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-\d{2}:\d{2}')
+    expressao = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}-\d{2}:\d{2}')
     try:
         if not (re.match(expressao, value)):
             print('   #### ERRO DATA')
     except BaseException as e:
-        print(e)
+        e.pri
 
 
 def checkTempoLog(SNV, valList, pathReportLog):
