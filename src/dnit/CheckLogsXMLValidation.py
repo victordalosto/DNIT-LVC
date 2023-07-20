@@ -49,9 +49,13 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
         # Convert the indexes to the IDS in the LogsTrecho.XML file
         for value in indexesUp:
             newArray.append(int(IDS[value]))
-        percentUp = str(round(amountUp / len(array)*100, 2))
-        MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)
-        updateReportLoop(SNV, newArray, MSG, pathReportLog)
+        tamanho = len(array)
+        percent = round(float(amountUp) / float(tamanho)*100, 2)
+        print("Percentage:", percent)
+        if (percent > 3):
+            percentUp = str(percent)
+            MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)
+            updateReportLoop(SNV, newArray, MSG, pathReportLog)
     if amountBot > 0:
         newArray = []
         # Convert the indexes to the IDS in the LogsTrecho.XML file
