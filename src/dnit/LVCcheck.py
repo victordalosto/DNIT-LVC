@@ -4,7 +4,7 @@ import src.dnit.Index as Index
 import src.dnit.Checker as Checker
 import src.dnit.CheckIndex as CheckIndex
 
-def check(root, array_snvs):
+def check(root, array_snvs=["full"]):
     # Path to the script
     path_main = os.path.dirname(os.path.dirname(__file__))
 

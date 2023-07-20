@@ -24,7 +24,6 @@ def check(pathHD, listToCheck, logger):
                 checkCiclo(pathHD, logger, xml_element)
                 continue
 
-            # Check if Road SNV should be checked according to input
             try:
                 if str(tags[0]) not in str(listToCheck):
                     continue

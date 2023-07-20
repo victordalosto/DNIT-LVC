@@ -1,8 +1,9 @@
 
 import os
 import glob
-
+import re
 import pyunpack
+import shutil
 from src.dnit.Logger import update_log
 
 
@@ -88,7 +89,7 @@ def check(pathMain, listSNVs, pathReportLog):
 # Check the integrity of videos .mp4 files
 def checkVideosIntegrity(path, type, SNV, pathReportLog):
     # Changed to catch multiple mp4 files
-    pathCam = path
+    path_cam = path
     # Check if folder exist
     if os.path.exists(path) is False:
         MSG = "Nao foi possivel encontrar a pasta: " + type
@@ -97,9 +98,14 @@ def checkVideosIntegrity(path, type, SNV, pathReportLog):
         # Check if files exists and are ok
         try:
             for file in glob.glob(os.path.join(path, "*.mp4")):
-                pathCam = os.path.join(path, file)
+                path_cam = os.path.normpath(os.path.join(path, file))
+                dir_path, filename = os.path.split(path_cam)
+                new_filename = re.sub(r'\(\d+\)', '', filename.replace(" ", "").replace("_", ""))
+                new_path_cam = os.path.join(dir_path, new_filename)
+                new_path_cam = os.path.normpath(new_path_cam)
+                shutil.move(path_cam, new_path_cam)
                 # Check if file is corrupted
-                if os.path.getsize(pathCam) == 0:
+                if os.path.getsize(new_path_cam) == 0:
                     MSG = "Arquivo corrompido na pasta: " + type
                     update_log(SNV, MSG, pathReportLog)
                 break
@@ -108,6 +114,6 @@ def checkVideosIntegrity(path, type, SNV, pathReportLog):
             update_log(SNV, MSG, pathReportLog)
 
         # If glob didn't catch any .mp4:
-        if not pathCam.endswith("mp4"):
+        if not path_cam.endswith("mp4"):
             MSG = "Nenhum arquivo 'mp4' encontrado na pasta: " + type
             update_log(SNV, MSG, pathReportLog)

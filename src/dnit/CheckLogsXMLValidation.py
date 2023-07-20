@@ -132,6 +132,7 @@ def checkVideo(SNV, valList, pathReportLog):
         for file in glob.glob(os.path.join(pathInput, "*.mp4")):
             # path to Video of ROAD SNV
             pathVid = os.path.join(pathInput, file)
+            pathVid = os.path.normpath(pathVid)
             # Get the duration of the .mp4 file
             if (pathVid.endswith('.mp4') is True):
                 duration = eval((json.loads(subprocess.check_output(f'ffprobe -v quiet -show_streams -select_streams v:0 -of json {pathVid}', shell=True).decode())['streams'][0])['duration'])
