@@ -51,7 +51,6 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
             newArray.append(int(IDS[value]))
         tamanho = len(array)
         percent = round(float(amountUp) / float(tamanho)*100, 2)
-        print("Percentage:", percent)
         if (percent > 3):
             percentUp = str(percent)
             MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)

@@ -16,7 +16,7 @@ from src.dnit.Logger import update_log
 # Check for inconsistencies in index.xml
 def get_ids_from_xml(path_root_hd, logger, array_snvs):
     index = os.path.join(path_root_hd, "index.xml")
-    print(index)
+    print("Checking index: ", index)
     try:
         ids_to_check = []
         text_excluded_trechos = ""

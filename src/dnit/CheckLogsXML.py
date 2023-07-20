@@ -62,8 +62,6 @@ def check(listSNVs, pathRep):
 
                     for attribute in range(len(valList)):
                         if is_not_valid(valList[attribute]):  # Check if null
-                            print(typeList)
-                            print(valList)
                             update_log(SNV, "Valor Null encontrado para " + typeList[attribute] + ". Valor no id: " + str(int(valList[0])), pathRep)
                         if attribute not in [5, 17, 22, 23]:  # Shoulb be a number
                             try:
