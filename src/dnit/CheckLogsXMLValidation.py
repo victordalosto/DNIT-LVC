@@ -15,7 +15,8 @@ skipCheckingDups = False
 def updateReportLoop(SNV, array, MSG, pathReportLog):
     if len(array) > 0:
         ERRORMSG = "Inconsistencia de " + MSG + " no LogsTrecho.XML. Valores dos Ids com error: "
-        for iterIDs in range(len(array)-1):
+        # for iterIDs in range(len(array)-1):
+        for iterIDs in min(4, range(len(array)-1)):
             ERRORMSG += str(int(array[iterIDs])) + ", "
         ERRORMSG += str(int(array[len(array)-1])) + "."
         update_log(SNV, ERRORMSG, pathReportLog)
@@ -51,7 +52,7 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
             newArray.append(int(IDS[value]))
         tamanho = len(array)
         percent = round(float(amountUp) / float(tamanho)*100, 2)
-        if (percent > 3):
+        if (percent > 5):
             percentUp = str(percent)
             MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)
             updateReportLoop(SNV, newArray, MSG, pathReportLog)
@@ -226,7 +227,7 @@ def checkPhotos(SNV, extension, pathReportLog):
     extensionPhoto = images*5/1000
     # Print error if folder has number of photos different than the Road SNV
     if (extensionPhoto < 0.95*extension or extensionPhoto > 1.15*extension):
-        MSG = "Problema relacionado ao numero de foto. Extensao no index (" + str(round(extension, 2)) + "km) =/= " + str(images) + "  x 5m (" + str(round(extensionPhoto, 2)) + "km). Fotos deveriam estar espacadas de 5-5m, e nao " + str(round(extension*1000/images, 1)) + "m"
+        MSG = "Problema relacionado ao numero de foto. Extensao no index (" + str(round(extension, 2)) + "km) =/= " + str(images) + "  x 5m (" + str(round(extensionPhoto, 2)) + "km)."
         update_log(SNV, MSG, pathReportLog)
 
 
