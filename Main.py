@@ -1,5 +1,5 @@
 import src.dnit.LVCcheck as LVC
 
-hd = "E:\\4304"
+hd = "F:\\4302"
 trechos = ["full"]
 LVC.check(hd, trechos)

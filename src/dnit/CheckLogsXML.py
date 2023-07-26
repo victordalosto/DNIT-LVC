@@ -141,7 +141,8 @@ def check(listSNVs, pathRep):
 
             try:
                 checkVelocity(SNV, finalList, pathRep)
-            except BaseException:
+            except Exception:
+                print(traceback.format_exc())
                 update_log(SNV, Err + "Velocidade", pathRep)
 
             try:

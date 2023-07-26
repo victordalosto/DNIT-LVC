@@ -16,9 +16,11 @@ def updateReportLoop(SNV, array, MSG, pathReportLog):
     if len(array) > 0:
         ERRORMSG = "Inconsistencia de " + MSG + " no LogsTrecho.XML. Valores dos Ids com error: "
         # for iterIDs in range(len(array)-1):
-        for iterIDs in min(4, range(len(array)-1)):
-            ERRORMSG += str(int(array[iterIDs])) + ", "
-        ERRORMSG += str(int(array[len(array)-1])) + "."
+        for idx, x in enumerate(array):
+            ERRORMSG += str(x) + ", "
+            if (idx > 5):
+                break
+        # ERRORMSG += str(int(array[len(array)-1])) + "."
         update_log(SNV, ERRORMSG, pathReportLog)
 
 
@@ -50,19 +52,16 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
         # Convert the indexes to the IDS in the LogsTrecho.XML file
         for value in indexesUp:
             newArray.append(int(IDS[value]))
-        tamanho = len(array)
-        percent = round(float(amountUp) / float(tamanho)*100, 2)
-        if (percent > 5):
-            percentUp = str(percent)
-            MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percentUp + "%) >= " + str(limitUp)
-            updateReportLoop(SNV, newArray, MSG, pathReportLog)
+        percent_top = str(round(amountUp / len(array)*100, 2))
+        MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percent_top + "%) >= " + str(limitUp)
+        updateReportLoop(SNV, newArray, MSG, pathReportLog)
     if amountBot > 0:
         newArray = []
         # Convert the indexes to the IDS in the LogsTrecho.XML file
         for value in indexesBot:
             newArray.append(int(IDS[value]))
-        percentBot = str(round(amountBot / len(array)*100, 2))
-        MSG = "valores incomuns de " + errorType + ". " + str(amountBot) + " ocorrencias (" + percentBot + "%) <= " + str(limitBot)
+        percent_bottom = str(round(amountBot / len(array)*100, 2))
+        MSG = "valores incomuns de " + errorType + ". " + str(amountBot) + " ocorrencias (" + percent_bottom + "%) <= " + str(limitBot)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
 
 
@@ -239,7 +238,7 @@ def checkVelocity(SNV, valList, pathReportLog):
     # tolerance = 100
     # checkDups(SNV, vel1, tolerance, "Velocidade", pathReportLog)
     # Number of times that velocity appears >= 60km *(1 + 10%)
-    supLim = 66
+    supLim = 70
     infLim = -0.1
     checkLimits(SNV, IDS, vel1, supLim, infLim, "Velocidade", pathReportLog)
     checkLimits(SNV, IDS, vel2, supLim, infLim, "Velocidade", pathReportLog)
@@ -295,7 +294,7 @@ def checkData(SNV, valList, pathReportLog):
     expressao = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}-\d{2}:\d{2}')
     try:
         if not (re.match(expressao, value)):
-            print('   #### ERRO DATA')
+            update_log(SNV, "Trecho com erro de GMT em DataHora", pathReportLog)
     except BaseException as e:
         e.pri
 
