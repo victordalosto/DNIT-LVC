@@ -53,6 +53,8 @@ def checkLimits(SNV, IDS, array, limitUp, limitBot, errorType, pathReportLog):
         for value in indexesUp:
             newArray.append(int(IDS[value]))
         percent_top = str(round(amountUp / len(array)*100, 2))
+        if (float(percent_top) <= 5 and str(errorType) == "Velocidade"):
+            return
         MSG = "valores incomuns de " + errorType + ". " + str(amountUp) + " ocorrencias (" + percent_top + "%) >= " + str(limitUp)
         updateReportLoop(SNV, newArray, MSG, pathReportLog)
     if amountBot > 0:
@@ -294,7 +296,8 @@ def checkData(SNV, valList, pathReportLog):
     expressao = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}-\d{2}:\d{2}')
     try:
         if not (re.match(expressao, value)):
-            update_log(SNV, "Trecho com erro de GMT em DataHora", pathReportLog)
+            # update_log(SNV, "Trecho com erro de GMT em DataHora", pathReportLog)
+            print("Trecho com erro de GMT em DataHora")
     except BaseException as e:
         e.pri
 
