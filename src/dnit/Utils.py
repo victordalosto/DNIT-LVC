@@ -1,4 +1,3 @@
-
 # Print the percentage of validation done in Prompt
 def print_percentage(SNVsName, percentage):
     SNVsName = str(SNVsName)
