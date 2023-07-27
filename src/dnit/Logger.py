@@ -4,20 +4,24 @@ from src.dnit.Utils import is_valid
 
 
 # Create a report log.txt file with all checking done on files
-def create_report_logger(path_logs, *args):
-    log_file = "LOG-" + datetime.now().strftime("%Y_%m_%d___%Hh_%Mm") + ".txt"
+def create_report_logger(path_main, *args):
+    path_logs = os.path.join(path_main, "logs")
+    if os.path.isdir(path_logs) is False:
+        os.mkdir(path_logs)
+    log_file = datetime.now().strftime("%Y_%m_%d___%Hh_%Mm") + ".txt"
     path_report_log = os.path.join(path_logs, log_file)
     if os.path.isfile(path_report_log) is False:
         Log = open(path_report_log, "w")
     else:
         Log = open(path_report_log, "r+")
         Log.truncate(0)
-    header = "Log: " + datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
+    header = "Running with args:" 
     for arg in args:
         header += " - " + str(arg)
     header += "\n\n"
     Log.writelines(header)
     Log.close()
+    print("Log file created: " + path_report_log)
     return path_report_log
 
 

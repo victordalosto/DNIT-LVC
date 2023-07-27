@@ -10,7 +10,7 @@ def check(root, array_snvs=["full"]):
     path_main = os.path.dirname(os.path.dirname(__file__))
 
     # Create an repot log file with all checking done on files
-    logger = Logger.create_report_logger(os.path.join(path_main, "logs"), root, array_snvs)
+    logger = Logger.create_report_logger(path_main, root, array_snvs)
 
     # Obtains the List of roads SNVs to be checked
     array_ids = Index.get_ids_from_xml(root, logger, array_snvs)

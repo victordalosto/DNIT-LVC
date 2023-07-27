@@ -16,10 +16,10 @@ from src.dnit.Logger import update_log
 # Check for inconsistencies in index.xml
 def get_ids_from_xml(path_root_hd, logger, array_snvs):
     index = os.path.join(path_root_hd, "index.xml")
-    print("Checking index: ", index)
+    print("Mapping ids from index.xml: ", index)
     try:
         ids_to_check = []
-        text_excluded_trechos = ""
+        text_excluded_trechos = []
         for xml_element in (ET.parse(index)).iter():
             getID(array_snvs, ids_to_check, text_excluded_trechos, xml_element)
         log_snvs_not_included(logger, text_excluded_trechos)
@@ -37,7 +37,7 @@ def getID(array_snvs, ids, text_excluded_trechos, xml_element):
                 if (isAValidId(array_snvs, node)):
                     ids.append(node.text)
                 else:
-                    text_excluded_trechos += node.text + "; "
+                    text_excluded_trechos.append(node.text)
 
 
 def isAValidId(array_snvs, node):
@@ -51,4 +51,4 @@ def isAValidId(array_snvs, node):
 
 def log_snvs_not_included(logger, text_excluded_trechos):
     if text_excluded_trechos != "":
-        update_log("GERAL", "Ids excluidos da verificacao pois não foi encontrado: " + text_excluded_trechos, logger)
+        update_log("GERAL", "Ids excluidos da verificacao pois nao foi encontrado: " + str(text_excluded_trechos), logger)

@@ -2,7 +2,7 @@
 def print_percentage(SNVsName, percentage):
     SNVsName = str(SNVsName)
     percentage = str(percentage)
-    MSG = "Trecho " + SNVsName + " - " + percentage + "%"
+    MSG = " .. trecho: [" + SNVsName + "]   " + percentage + "%"
     print(MSG)
 
 
