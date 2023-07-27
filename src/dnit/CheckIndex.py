@@ -25,7 +25,7 @@ def check(pathHD, listToCheck, logger):
                 continue
 
             try:
-                if str(tags[0]) not in str(listToCheck):
+                if str(tags[0]) not in (listToCheck):
                     continue
             except BaseException:
                 continue

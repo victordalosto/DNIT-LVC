@@ -13,7 +13,7 @@ def check(root, array_snvs=["full"]):
 
     # Obtains the List of roads SNVs to be checked
     array_ids = Index.get_ids_from_xml(root, logger, array_snvs)
-
+    
     # Check for inconsistencies in Index.xml
     array_snv_infos = Checker.index(root, array_ids, logger)
 
