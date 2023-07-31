@@ -3,3 +3,4 @@ src/lib/ffmpeg/bin/ffprobe.exe
 src/lib/ffmpeg/presets
 *.txt
 *__pycache__
+Main.py
