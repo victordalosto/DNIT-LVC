@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 from src.dnit.Utils import is_not_valid, print_percentage
 from src.dnit.Logger import update_log
-from src.dnit.CheckLogsXMLValidation import checkData, checkOdometer, checkKM, checkTempoLog, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
+from src.dnit.CheckLogsXMLValidation import checkOdometer, checkKM, checkTempoLog, checkVideo, checkIRI, checkFlecha, checkAzimute, checkSatelites, checkCoordinates, checkAltitude, checkErros, checkPhotos, checkVelocity
 
 typeList = ["Id", "Odometro", "OdometroTrecho", "Velocidade", "ExtLog", "DataHora", "TempoLog", "Frente", "Tras", "Velocidade", "Odometro", "Z", "X", "Y", "Azi", "Erro", "Sat", "GPRMC", "IRIInt", "IRIExt", "FlechaInt", "FlechaExt", "TipoReves", "PerUrb"]
 
@@ -128,7 +128,7 @@ def check(listSNVs, pathRep):
                 checkTempoLog(SNV, finalList, pathRep)
             except BaseException:
                 update_log(SNV, Err + "TempoLog", pathRep)
-                
+
             try:
                 checkErros(SNV, finalList, pathRep)
             except BaseException:
@@ -145,10 +145,10 @@ def check(listSNVs, pathRep):
                 print(traceback.format_exc())
                 update_log(SNV, Err + "Velocidade", pathRep)
 
-            try:
-                checkData(SNV, finalList, pathRep)
-            except BaseException:
-                update_log(SNV, Err + "Data", pathRep)
+            # try:
+            #     checkData(SNV, finalList, pathRep)
+            # except BaseException:
+            #     update_log(SNV, Err + "Data", pathRep)
 
         except FileNotFoundError:
             MSG = "Nao foi possivel validar o Trecho, pois nao tem o arquivo LogsTrecho.xml no caminho: " + os.path.join(listSNVs[3][iter])

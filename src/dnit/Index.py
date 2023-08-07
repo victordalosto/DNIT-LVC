@@ -41,7 +41,7 @@ def getID(array_snvs, ids, text_excluded_trechos, xml_element):
 
 
 def isAValidId(array_snvs, node):
-    if (str(array_snvs[0]) == "full"):
+    if (len(array_snvs) == 0 or str(array_snvs[0]) == "full"):
         return True
     for snv in array_snvs:
         if (str(node.text) == str(snv)):
