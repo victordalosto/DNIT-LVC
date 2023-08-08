@@ -29,7 +29,7 @@ def check(pathMain, listSNVs, pathReportLog):
     # pass
     pathBin = os.path.join(pathMain, "lib", "ffmpeg", "bin")
     pathScript = os.path.join(pathBin, "ffprobe.exe")
-    
+
     os.chdir(pathBin)
 
     if (not os.path.isfile(pathScript)):
@@ -82,8 +82,9 @@ def check(pathMain, listSNVs, pathReportLog):
                         hasCSV = True
                         break
             if (hasCSV is False):
-                MSG = "Trecho nao tem arquivo de dados brutos em formato .CSV"
-                update_log(SNV, MSG, pathReportLog)
+                pass
+                # MSG = "Trecho nao tem arquivo de dados brutos em formato .CSV"
+                # update_log(SNV, MSG, pathReportLog)
 
 
 # Check the integrity of videos .mp4 files

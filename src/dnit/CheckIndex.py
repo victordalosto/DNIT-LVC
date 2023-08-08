@@ -59,8 +59,9 @@ def checkInformationsOnIndex(pathHD, pathReportLog, listSNVs, tags):
         # Check for Null Values in index.xml
         for tag in range(len(tags)):
             if is_not_valid(tags[tag]):
-                MSG = "Encontrado valor nulo para o tipo: " + str(valid_tags[tag]) + " no index.xml"
-                update_log(pathSNV, MSG, pathReportLog)
+                if (valid_tags[tag] != "PlacaCarro"):
+                    MSG = "Encontrado valor nulo para o tipo: " + str(valid_tags[tag]) + " no index.xml"
+                    update_log(pathSNV, MSG, pathReportLog)
 
         # Check if UF in names is equals to the one in index.xml
         if tags[4] != currentSNV[3:5] or str(tags[4]).upper() not in get_UFs():

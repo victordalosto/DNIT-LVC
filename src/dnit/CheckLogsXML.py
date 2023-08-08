@@ -163,4 +163,4 @@ def check(listSNVs, pathRep):
             update_log(SNV, MSG, pathRep)
 
         # Update Log, informing that checkings were done on ROAD SNV
-        update_log(SNV, "Verificacao Concluida", pathRep)
+        # update_log(SNV, "Verificacao Concluida", pathRep)
